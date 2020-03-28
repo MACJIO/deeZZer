@@ -1,5 +1,5 @@
 import axios, { Method } from 'axios';
-import { DeviceData } from './interfaces';
+import { DeviceData, UserData } from './interfaces';
 import { config } from 'dotenv';
 import {
     generateUserAgent,
@@ -112,6 +112,39 @@ export class Api {
                 },
                 {
                     'EMAIL': email
+                }
+            );
+
+            return res.data;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async userCreate(sid: string, userData: UserData) {
+        try {
+            const res = await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid,
+                    method: 'user_create',
+                    output: 3,
+                    input: 3,
+                    network: this.network,
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    "BIRTHDAY": userData.birthday,
+                    "BLOG_NAME": userData.blogName,
+                    "EMAIL": userData.email,
+                    "PASSWORD": userData.password,
+                    "SEX": userData.sex,
+                    "lang": userData.lang
                 }
             );
 
