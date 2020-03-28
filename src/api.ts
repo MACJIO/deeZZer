@@ -14,6 +14,8 @@ export class Api {
     private network: string = randHex(64);
     private uniqId: string = randHex(32);
     private readonly apiKey: string | undefined;
+    // base64 encoded json TODO: understand how this JSON generates
+    private mobileTracking = 'eyJvdXJzZWNyZXQiOiJkZWV6ZXIwMTEwMTNzYyIsImFuZHJvaWRJRCI6ImRlNTNhZWQ2NDc4NzM1OTkiLCJpZGZhIjoiYmQyYWYwMjMtMzQ1ZS00NjYzLWE0MjktMDU1OGM3MDUxMmYwIiwibWFjQWRkcmVzcyI6IjAyOjAwOjAwOjAwOjAwOjAwIiwiZGV2aWNlX3R5cGUiOiJhbmRyb2lkIiwiYXBwX2lkIjoiZGVlemVyLmFuZHJvaWQuYXBwIn0';
 
     constructor(deviceData: DeviceData) {
         this.deviceData = deviceData;
@@ -23,7 +25,7 @@ export class Api {
         else this.apiKey = undefined;
     }
 
-    public apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, ...data: any) {
+    public apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, data?: {}) {
         return axios.request({
             url: '/gateway.php',
             method,
@@ -82,6 +84,34 @@ export class Api {
                     auth_token: authToken,
                     output: 3,
                     method: 'api_checkToken'
+                }
+            );
+
+            return res.data;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async emailCheck(sid: string, email: string) {
+        try {
+            const res = await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid,
+                    method: 'deezer_emailCheck',
+                    output: 3,
+                    input: 3,
+                    network: this.network,
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    'EMAIL': email
                 }
             );
 

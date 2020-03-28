@@ -25,6 +25,9 @@ const test = async () => {
     await client.initSession();
 
     console.log(client.getSession());
+    //
+    // const data = await api.emailCheck('frb1d0e877dd8917ccaf382a210b494fb0aba8eb', 'email@gmailm');
+    // console.log(data);
 };
 
 test();
