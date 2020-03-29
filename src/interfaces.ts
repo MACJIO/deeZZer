@@ -3,7 +3,7 @@ export interface UserData {
     blogName?: string;
     email: string;
     password: string;
-    sex?: 'F' | 'M';
+    sex?: string;
     lang?: string;
 }
 
