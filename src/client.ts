@@ -1,6 +1,6 @@
-import { DeviceData, UserData } from './interfaces';
-import { Api } from './api';
-import { decryptToken, generateAuthToken } from "./utils";
+import {DeviceData, UserData} from './interfaces';
+import {Api} from './api';
+import {decryptToken, generateAuthToken} from "./utils";
 
 export class Client extends Api {
     private session: string | null = null;
@@ -20,9 +20,7 @@ export class Client extends Api {
             let decryptedToken = decryptToken(token);
             let authToken = generateAuthToken(decryptedToken.substr(0, 64), decryptedToken.substr(64, 16));
 
-            let session = (await this.checkToken(authToken)).results;
-
-            this.session = session;
+            this.session = (await this.checkToken(authToken)).results;
         } catch (err) {
             throw new Error(err);
         }

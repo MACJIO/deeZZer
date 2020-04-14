@@ -153,4 +153,37 @@ export class Api {
             throw new Error(err);
         }
     }
+
+    public async mobileUserAuth(sid: string, userData: UserData) {
+        try {
+            const res = await this.apiCaller(
+                'POST',
+                'http',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid,
+                    method: 'mobile_userAuth',
+                    output: 3,
+                    input: 3,
+                    network: this.network,
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    "BIRTHDAY": userData.birthday,
+                    "BLOG_NAME": userData.blogName,
+                    "EMAIL": userData.email,
+                    "PASSWORD": userData.password,
+                    "SEX": userData.sex,
+                    "lang": userData.lang
+                }
+            );
+
+            return res.data;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
 }

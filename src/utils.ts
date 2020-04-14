@@ -5,6 +5,38 @@ import { DeviceData } from './interfaces';
 //load .env file to process.env
 config();
 
+const padding = (data: string): Buffer => {
+    const buf = Buffer.from(data);
+    const res = Buffer.alloc((buf.length + 15) & ~0xF, 0);
+    buf.copy(res);
+
+    return res;
+};
+
+const encryptPassword = (password: string, key: string): string => {
+    const cipher = crypto
+        .createCipheriv('aes-128-ecb', key, null)
+        .setAutoPadding(false);
+
+    //@ts-ignore
+    let encryptedPassword: string = cipher.update(padding(password), 'hex', 'hex');
+    encryptedPassword += cipher.final('hex');
+
+    return encryptedPassword;
+};
+
+const decryptPassword = (password: string, key: string): string => {
+    const decipher = crypto
+        .createDecipheriv('aes-128-ecb', key, null)
+        .setAutoPadding(false);
+
+    // @ts-ignore
+    let decryptedPassword: string = decipher.update(Buffer.from(password, 'hex'), undefined, 'hex');
+    decryptedPassword += decipher.final('hex');
+
+    return decryptedPassword;
+};
+
 const decryptToken = (token: string): string => {
     const decipher = crypto
         .createDecipheriv('aes-128-ecb', <string>process.env.TOKEN_DECIPHER_KEY, null)
