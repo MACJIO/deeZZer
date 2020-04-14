@@ -1,3 +1,5 @@
+const { Client } = require('./client');
+
 //test user data
 const userData = {
     email: 'ass@clown.com',
@@ -17,3 +19,6 @@ const deviceData = {
     lang: 'us',
     appVersion: '6.1.18.94'
 };
+
+const client = new Client(userData, deviceData);
+

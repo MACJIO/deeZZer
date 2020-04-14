@@ -77,6 +77,18 @@ const generateUserAgent = (deviceData: DeviceData): string => {
     }
 };
 
+const generateMobileTracking = () => {
+    const mobileTracking = {
+        oursecret: 'deezer011013sc',
+        androidID: randHex(16),
+        macAddress: '02:00:00:00:00:00',
+        device_type: 'android',
+        app_id: 'deezer.android.app'
+    };
+
+    return Buffer.from(JSON.stringify(mobileTracking)).toString('base64');
+};
+
 const randVal = (max: number): number => {
     return Math.floor(Math.random() * max);
 };
@@ -90,9 +102,14 @@ const randHex = (length: number): string => {
     return res;
 };
 
+console.log(generateMobileTracking());
+
 export {
     decryptToken,
     generateAuthToken,
     generateUserAgent,
-    randHex
+    generateMobileTracking,
+    randHex,
+    encryptPassword,
+    decryptPassword
 }
