@@ -14,16 +14,13 @@ config();
 export class Client {
     private readonly userAgent: string;
     private session: string | null = null;
-    //TODO: Make network and uniqId generation
-    private network: string = randHex(64);
-    private uniqId: string = randHex(32);
     private readonly apiKey: string | undefined;
     private readonly mobileTracking: string | undefined;
     private decryptedToken: string | undefined;
 
     constructor(private readonly userData: AccountData, private readonly deviceData: DeviceData) {
         this.userAgent = generateUserAgent(this.deviceData);
-        this.mobileTracking = generateMobileTracking();
+        this.mobileTracking = generateMobileTracking(this.deviceData);
         this.apiKey = process.env.ANDROID_API_KEY;
     }
 
@@ -52,7 +49,7 @@ export class Client {
                     'Connection': 'Keep-Alive'
                 },
                 {
-                    network: this.network,
+                    network: this.deviceData.network,
                     api_key: this.apiKey,
                     version: this.deviceData.appVersion,
                     lang: this.deviceData.lang,
@@ -60,6 +57,7 @@ export class Client {
                     screenWidth: this.deviceData.screenWidth || '1080',
                     screenHeight: this.deviceData.screenHeight || '1776',
                     output: 3,
+                    uniq_id: this.deviceData.uniqID,
                     method: 'mobile_auth'
                 }
             );
@@ -108,7 +106,7 @@ export class Client {
                     method: 'deezer_emailCheck',
                     output: 3,
                     input: 3,
-                    network: this.network,
+                    network: this.deviceData.network,
                     mobile_tracking: this.mobileTracking
                 },
                 {
@@ -136,7 +134,7 @@ export class Client {
                     method: 'user_create',
                     output: 3,
                     input: 3,
-                    network: this.network,
+                    network: this.deviceData.network,
                     mobile_tracking: this.mobileTracking
                 },
                 {
@@ -175,7 +173,7 @@ export class Client {
                     method: 'mobile_userAuth',
                     output: 3,
                     input: 3,
-                    network: this.network,
+                    network: this.deviceData.network,
                     mobile_tracking: this.mobileTracking
                 },
                 {
@@ -211,7 +209,7 @@ export class Client {
                     method: 'mobile_userAutolog',
                     output: 3,
                     input: 3,
-                    network: this.network,
+                    network: this.deviceData.network,
                     mobile_tracking: this.mobileTracking
                 },
                 {
@@ -250,7 +248,7 @@ export class Client {
                     method: 'trial_enable',
                     output: 3,
                     input: 3,
-                    network: this.network,
+                    network: this.deviceData.network,
                     mobile_tracking: this.mobileTracking
                 },
                 {

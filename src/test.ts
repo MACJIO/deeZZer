@@ -1,10 +1,11 @@
 import {createPrivateKey} from "crypto";
+import {randHex} from "./utils";
 
 const { Client } = require('./client');
 
 //test user data
 const userData = {
-    email: 'test3@eoe.com',
+    email: 'test3@eoeeee.com',
     password: 'somepassword',
     birthday: '1234-12-12',
     blogName: 'asssss',
@@ -19,7 +20,10 @@ const deviceData = {
     deviceType: 'Mobile',
     deviceModel: 'Sony Xperia Z',
     lang: 'us',
-    appVersion: '6.1.18.94'
+    appVersion: '6.1.18.94',
+    androidID: randHex(16),
+    network: randHex(64),
+    uniqID: randHex(32),
 };
 
 const client = new Client(userData, deviceData);

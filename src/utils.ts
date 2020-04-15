@@ -77,10 +77,10 @@ const generateUserAgent = (deviceData: DeviceData): string => {
     }
 };
 
-const generateMobileTracking = () => {
+const generateMobileTracking = (deviceData: DeviceData) => {
     const mobileTracking = {
-        oursecret: 'deezer011013sc',
-        androidID: randHex(16),
+        oursecret: process.env.MOBILE_TRACKING_SECRET,
+        androidID: deviceData.androidID,
         macAddress: '02:00:00:00:00:00',
         device_type: 'android',
         app_id: 'deezer.android.app'

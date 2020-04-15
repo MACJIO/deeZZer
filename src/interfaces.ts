@@ -17,4 +17,7 @@ export interface DeviceData {
     lang: string;
     screenWidth?: number;
     screenHeight?: number;
+    androidID: string;
+    uniqID: string;
+    network: string;
 }
