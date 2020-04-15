@@ -13,13 +13,10 @@ const padding = (data: Buffer): Buffer => {
     return res;
 };
 
-const generateLink = (MD5Origin: string, songId: string, mediaVersion: string) => {
-    let i = 1;
-    let unknown = '0';
+const generateLink = (MD5Origin: string, songId: string, mediaVersion: string, trackType: string, i: number = 1) => {
     let str6;
     let del = Buffer.alloc(1, 0xa4);
-
-    if (unknown !== '3') {
+    if (trackType !== '3') {
         str6 = Buffer.alloc(0);
     } else {
         str6 = Buffer.concat([del, Buffer.from('1')]);
