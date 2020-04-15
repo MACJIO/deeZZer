@@ -1,5 +1,4 @@
-import {createPrivateKey} from "crypto";
-import {randHex} from "./utils";
+import { randHex } from './utils';
 
 const { Client } = require('./client');
 
@@ -28,7 +27,7 @@ const deviceData = {
 
 const client = new Client(userData, deviceData);
 
-(async () => {
+const signUpAndGetFreeTrial = async () => {
     await client.initSession();
 
     console.log('Session Id:', client.getSession);
@@ -43,8 +42,4 @@ const client = new Client(userData, deviceData);
 
     const trialRes = await client.trialEnable();
     console.log('Trial enable response:', trialRes);
-})();
-
-
-
-
+};
