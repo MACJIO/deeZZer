@@ -1,4 +1,4 @@
-import { DeviceData, UserData } from './interfaces';
+import { DeviceData, AccountData } from './interfaces';
 import axios, { Method } from 'axios';
 import {
     decryptToken, encryptPassword,
@@ -14,7 +14,6 @@ config();
 export class Client {
     private readonly userAgent: string;
     private session: string | null = null;
-    private arl: string | undefined;
     //TODO: Make network and uniqId generation
     private network: string = randHex(64);
     private uniqId: string = randHex(32);
@@ -22,7 +21,7 @@ export class Client {
     private readonly mobileTracking: string | undefined;
     private decryptedToken: string | undefined;
 
-    constructor(private readonly userData: UserData, private readonly deviceData: DeviceData) {
+    constructor(private readonly userData: AccountData, private readonly deviceData: DeviceData) {
         this.userAgent = generateUserAgent(this.deviceData);
         this.mobileTracking = generateMobileTracking();
         this.apiKey = process.env.ANDROID_API_KEY;
@@ -153,7 +152,7 @@ export class Client {
 
             //may be I should move this initialization
             if (res.data.error.length == 0) {
-                this.arl = res.data.results;
+                this.userData.arl = res.data.results;
             }
 
             return res.data;
@@ -217,7 +216,7 @@ export class Client {
                 },
                 {
                     "ACCOUNT_ID": "",
-                    "ARL": this.arl,
+                    "ARL": this.userData.arl,
                     "consent_string": "",
                     "custo_partner": "",
                     "custo_version_id": "",
@@ -287,6 +286,6 @@ export class Client {
     }
 
     get getARL() {
-        return this.arl;
+        return this.userData.arl;
     }
 }

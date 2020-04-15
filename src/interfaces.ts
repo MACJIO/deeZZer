@@ -1,10 +1,11 @@
-export interface UserData {
+export interface AccountData {
     birthday?: string;
     blogName?: string;
     email: string;
     password: string;
     sex?: string;
     lang?: string;
+    arl?: string;
 }
 
 export interface DeviceData {
