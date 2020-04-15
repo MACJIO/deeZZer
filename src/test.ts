@@ -1,9 +1,11 @@
+import {createPrivateKey} from "crypto";
+
 const { Client } = require('./client');
 
 //test user data
 const userData = {
-    email: 'ass@clown.com',
-    password: '004db2698dc8893e47e8d73625f217a1',
+    email: 'test3@eoe.com',
+    password: 'somepassword',
     birthday: '1234-12-12',
     blogName: 'asssss',
     sex: 'F',
@@ -21,4 +23,24 @@ const deviceData = {
 };
 
 const client = new Client(userData, deviceData);
+
+(async () => {
+    await client.initSession();
+
+    console.log('Session Id:', client.getSession);
+    console.log('Decrypted token:', client.getDecToken);
+
+    const regRes = await client.userCreate();
+    console.log('Sign up response:', regRes);
+    console.log('ARL:', client.getARL);
+
+    const autoLog = await client.mobileUserAutoLog();
+    console.log('Mobile user auto log:', autoLog);
+
+    const trialRes = await client.trialEnable();
+    console.log('Trial enable response:', trialRes);
+})();
+
+
+
 
