@@ -102,8 +102,6 @@ const randHex = (length: number): string => {
     return res;
 };
 
-console.log(generateMobileTracking());
-
 export {
     decryptToken,
     generateAuthToken,

@@ -1,7 +1,7 @@
 import { DeviceData, UserData } from './interfaces';
 import axios, { Method } from 'axios';
 import {
-    decryptToken,
+    decryptToken, encryptPassword,
     generateAuthToken,
     generateMobileTracking,
     generateUserAgent,
@@ -20,6 +20,7 @@ export class Client {
     private uniqId: string = randHex(32);
     private readonly apiKey: string | undefined;
     private readonly mobileTracking: string | undefined;
+    private decryptedToken: string | undefined;
 
     constructor(private readonly userData: UserData, private readonly deviceData: DeviceData) {
         this.userAgent = generateUserAgent(this.deviceData);
@@ -94,7 +95,7 @@ export class Client {
         }
     }
 
-    public async emailCheck(sid: string, email: string) {
+    public async emailCheck() {
         try {
             const res = await this.apiCaller(
                 'POST',
@@ -104,7 +105,7 @@ export class Client {
                 },
                 {
                     api_key: this.apiKey,
-                    sid,
+                    sid: this.session,
                     method: 'deezer_emailCheck',
                     output: 3,
                     input: 3,
@@ -112,7 +113,7 @@ export class Client {
                     mobile_tracking: this.mobileTracking
                 },
                 {
-                    'EMAIL': email
+                    'EMAIL': this.userData.email
                 }
             );
 
@@ -122,7 +123,7 @@ export class Client {
         }
     }
 
-    public async userCreate(sid: string, userData: UserData) {
+    public async userCreate() {
         try {
             const res = await this.apiCaller(
                 'POST',
@@ -132,7 +133,7 @@ export class Client {
                 },
                 {
                     api_key: this.apiKey,
-                    sid,
+                    sid: this.session,
                     method: 'user_create',
                     output: 3,
                     input: 3,
@@ -140,12 +141,13 @@ export class Client {
                     mobile_tracking: this.mobileTracking
                 },
                 {
-                    "BIRTHDAY": userData.birthday,
-                    "BLOG_NAME": userData.blogName,
-                    "EMAIL": userData.email,
-                    "PASSWORD": userData.password,
-                    "SEX": userData.sex,
-                    "lang": userData.lang
+                    "BIRTHDAY": this.userData.birthday,
+                    "BLOG_NAME": this.userData.blogName,
+                    "EMAIL": this.userData.email,
+                    // @ts-ignore
+                    "PASSWORD": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
+                    "SEX": this.userData.sex,
+                    "lang": this.userData.lang
                 }
             );
 
@@ -155,7 +157,7 @@ export class Client {
         }
     }
 
-    public async mobileUserAuth(sid: string, userData: UserData) {
+    public async mobileUserAuth() {
         try {
             const res = await this.apiCaller(
                 'POST',
@@ -165,7 +167,7 @@ export class Client {
                 },
                 {
                     api_key: this.apiKey,
-                    sid,
+                    sid: this.session,
                     method: 'mobile_userAuth',
                     output: 3,
                     input: 3,
@@ -173,12 +175,41 @@ export class Client {
                     mobile_tracking: this.mobileTracking
                 },
                 {
-                    "BIRTHDAY": userData.birthday,
-                    "BLOG_NAME": userData.blogName,
-                    "EMAIL": userData.email,
-                    "PASSWORD": userData.password,
-                    "SEX": userData.sex,
-                    "lang": userData.lang
+                    "BIRTHDAY": this.userData.birthday,
+                    "BLOG_NAME": this.userData.blogName,
+                    "EMAIL": this.userData.email,
+                    // @ts-ignore
+                    "PASSWORD": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
+                    "SEX": this.userData.sex,
+                    "lang": this.userData.lang
+                }
+            );
+
+            return res.data;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async trialEnable() {
+        try {
+            const res = await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'trial_enable',
+                    output: 3,
+                    input: 3,
+                    network: this.network,
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    "ORIGIN": ""
                 }
             );
 
@@ -192,8 +223,8 @@ export class Client {
         try {
             let token = (await this.mobileAuth()).results.TOKEN;
 
-            let decryptedToken = decryptToken(token);
-            let authToken = generateAuthToken(decryptedToken.substr(0, 64), decryptedToken.substr(64, 16));
+            this.decryptedToken = decryptToken(token);
+            let authToken = generateAuthToken(this.decryptedToken.substr(0, 64), this.decryptedToken.substr(64, 16));
 
             this.session = (await this.checkToken(authToken)).results;
         } catch (err) {
@@ -203,5 +234,9 @@ export class Client {
 
     get getSession() {
         return this.session;
+    }
+
+    get getDecToken() {
+        return this.decryptedToken;
     }
 }
