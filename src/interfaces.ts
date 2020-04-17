@@ -20,4 +20,15 @@ export interface DeviceData {
     androidID: string;
     uniqID: string;
     network: string;
+    cpuCount: number;
+    cpuMaxFrequency: number;
+    ram: number;
+    serial: string;
 }
+
+export interface MediaData {
+    id: string;
+    type: string;
+    format?: string;
+}
+

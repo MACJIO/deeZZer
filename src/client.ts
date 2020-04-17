@@ -1,4 +1,4 @@
-import { DeviceData, AccountData } from './interfaces';
+import {DeviceData, AccountData, MediaData} from './interfaces';
 import axios, { Method } from 'axios';
 import {
     decryptToken, encryptPassword,
@@ -177,15 +177,26 @@ export class Client {
                     mobile_tracking: this.mobileTracking
                 },
                 {
-                    "BIRTHDAY": this.userData.birthday,
-                    "BLOG_NAME": this.userData.blogName,
-                    "EMAIL": this.userData.email,
+                    "consent_string": "",
+                    "custo_partner": "",
+                    "custo_version_id": "",
+                    "device_name": this.deviceData.deviceModel,
+                    "device_os": this.deviceData.platform,
+                    "device_serial": this.deviceData.serial,
+                    "device_type": this.deviceData.deviceType,
+                    "google_play_services_availability": "0",
+                    "mail": this.userData.email,
+                    "model": this.deviceData.deviceModel,
                     // @ts-ignore
-                    "PASSWORD": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
-                    "SEX": this.userData.sex,
-                    "lang": this.userData.lang
+                    "password": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
+                    "platform": this.deviceData.platform || ""
                 }
             );
+
+            //may be I should move this initialization
+            if (res.data.error.length == 0) {
+                this.userData.arl = res.data.results.ARL;
+            }
 
             return res.data;
         } catch (err) {
@@ -220,7 +231,7 @@ export class Client {
                     "custo_version_id": "",
                     "device_name": this.deviceData.deviceModel,
                     "device_os": this.deviceData.platform,
-                    "device_serial": randHex(64),
+                    "device_serial": this.deviceData.serial,
                     "device_type": this.deviceData.deviceType,
                     "google_play_services_availability": "0",
                     "model": this.deviceData.deviceModel,
@@ -253,6 +264,78 @@ export class Client {
                 },
                 {
                     "ORIGIN": ""
+                }
+            );
+
+            return res.data;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async logListen(nextMedia: MediaData, currentMedia: MediaData, pageContext: MediaData, listenTime: number, currentTime: number) {
+        try {
+            const res = await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'log.listen',
+                    output: 3,
+                    input: 3,
+                    network: this.deviceData.network,
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    "next_media": {
+                        "media": {
+                            "id": nextMedia.id,
+                            "type": nextMedia.type
+                        }
+                    },
+                    "params": {
+                        "ctxt": {
+                            "c": pageContext.id,
+                            "id": pageContext.id,
+                            "t": pageContext.type
+                        },
+                        "dev": {
+                            "t": "30",
+                            "v": "OnePlus_A0001_9_6.1.18.94"
+                        },
+                        "device": {
+                            "cpu_count": this.deviceData.cpuCount,
+                            "cpu_max_frequency": this.deviceData.cpuMaxFrequency,
+                            "ram": this.deviceData.ram
+                        },
+                        "is_shuffle": false,
+                        "l_30sec": 0,
+                        "lt": listenTime,
+                        "media": {
+                            "format": currentMedia.format,
+                            "id": currentMedia.id,
+                            "type": currentMedia.type
+                        },
+                        "network": {
+                            "subtype": "wifi",
+                            "type": "LAN"
+                        },
+                        "repeat_type": "repeat_all",
+                        "stat": {
+                            "conn": "LAN",
+                            "media_format": currentMedia.format,
+                            "pause": 0,
+                            "player_version": "jukebox_exo_player_2",
+                            "seek": 0,
+                            "sync": 1
+                        },
+                        "ts_listen": currentTime,
+                        "type": 0
+                    }
                 }
             );
 
