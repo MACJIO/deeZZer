@@ -16,8 +16,8 @@ const userData = {
 //TODO: add needed props to DevData interface
 //test device data
 const deviceData = {
-    platform: 'Android',
-    platformVersion: '8.1.0',
+    deviceOS: 'Android',
+    deviceOSVersion: '8.1.0',
     deviceType: 'Mobile',
     deviceModel: 'Sony Xperia Z',
     lang: 'us',
@@ -48,7 +48,7 @@ const signUpAndGetFreeTrial = async () => {
 };
 
 const signIn = async () => {
-    await client.initSession();
+    // await client.initSession();
 
     console.log('Session Id:', client.getSession);
     console.log('Decrypted token:', client.getDecToken);
@@ -82,3 +82,5 @@ const listenSongWithOutLoad = async () => {
     const res = await client.logListen(nextSong, currSong, pageCtx, 30, Math.floor(Date.now() / 1000));
     console.log('Log.listen res:', res);
 };
+
+signIn();

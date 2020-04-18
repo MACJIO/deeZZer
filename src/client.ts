@@ -15,7 +15,7 @@ config();
 
 export class Client {
     private readonly userAgent: string;
-    private session: string | null = null;
+    private session: string | undefined;
     private readonly apiKey: string | undefined;
     private readonly mobileTracking: string | undefined;
     private decryptedToken: string | undefined;
@@ -96,27 +96,31 @@ export class Client {
 
     public async emailCheck() {
         try {
-            const res = await this.apiCaller(
-                'POST',
-                'https',
-                {
-                    'accept-encoding': 'gzip'
-                },
-                {
-                    api_key: this.apiKey,
-                    sid: this.session,
-                    method: 'deezer_emailCheck',
-                    output: 3,
-                    input: 3,
-                    network: this.deviceData.network,
-                    mobile_tracking: this.mobileTracking
-                },
-                {
-                    'EMAIL': this.userData.email
-                }
-            );
+            if (this.session) {
+                const res = await this.apiCaller(
+                    'POST',
+                    'https',
+                    {
+                        'accept-encoding': 'gzip'
+                    },
+                    {
+                        api_key: this.apiKey,
+                        sid: this.session,
+                        method: 'deezer_emailCheck',
+                        output: 3,
+                        input: 3,
+                        network: this.deviceData.network,
+                        mobile_tracking: this.mobileTracking
+                    },
+                    {
+                        'EMAIL': this.userData.email
+                    }
+                );
 
-            return res.data;
+                return res.data;
+            } else {
+                return new Error('Session is not defined. Use initSession.');
+            }
         } catch (err) {
             throw new Error(err);
         }
@@ -124,38 +128,42 @@ export class Client {
 
     public async userCreate() {
         try {
-            const res = await this.apiCaller(
-                'POST',
-                'https',
-                {
-                    'accept-encoding': 'gzip'
-                },
-                {
-                    api_key: this.apiKey,
-                    sid: this.session,
-                    method: 'user_create',
-                    output: 3,
-                    input: 3,
-                    network: this.deviceData.network,
-                    mobile_tracking: this.mobileTracking
-                },
-                {
-                    "BIRTHDAY": this.userData.birthday,
-                    "BLOG_NAME": this.userData.blogName,
-                    "EMAIL": this.userData.email,
-                    // @ts-ignore
-                    "PASSWORD": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
-                    "SEX": this.userData.sex,
-                    "lang": this.userData.lang
+            if (this.session) {
+                const res = await this.apiCaller(
+                    'POST',
+                    'https',
+                    {
+                        'accept-encoding': 'gzip'
+                    },
+                    {
+                        api_key: this.apiKey,
+                        sid: this.session,
+                        method: 'user_create',
+                        output: 3,
+                        input: 3,
+                        network: this.deviceData.network,
+                        mobile_tracking: this.mobileTracking
+                    },
+                    {
+                        "BIRTHDAY": this.userData.birthday,
+                        "BLOG_NAME": this.userData.blogName,
+                        "EMAIL": this.userData.email,
+                        // @ts-ignore
+                        "PASSWORD": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
+                        "SEX": this.userData.sex,
+                        "lang": this.userData.lang
+                    }
+                );
+
+                //may be I should move this initialization
+                if (res.data.error.length == 0) {
+                    this.userData.arl = res.data.results;
                 }
-            );
 
-            //may be I should move this initialization
-            if (res.data.error.length == 0) {
-                this.userData.arl = res.data.results;
+                return res.data;
+            } else {
+                return new Error('Session is not defined. Use initSession.');
             }
-
-            return res.data;
         } catch (err) {
             throw new Error(err);
         }
@@ -163,44 +171,48 @@ export class Client {
 
     public async mobileUserAuth() {
         try {
-            const res = await this.apiCaller(
-                'POST',
-                'http',
-                {
-                    'accept-encoding': 'gzip'
-                },
-                {
-                    api_key: this.apiKey,
-                    sid: this.session,
-                    method: 'mobile_userAuth',
-                    output: 3,
-                    input: 3,
-                    network: this.deviceData.network,
-                    mobile_tracking: this.mobileTracking
-                },
-                {
-                    "consent_string": "",
-                    "custo_partner": "",
-                    "custo_version_id": "",
-                    "device_name": this.deviceData.deviceModel,
-                    "device_os": this.deviceData.deviceOS,
-                    "device_serial": this.deviceData.serial,
-                    "device_type": this.deviceData.deviceType,
-                    "google_play_services_availability": "0",
-                    "mail": this.userData.email,
-                    "model": this.deviceData.deviceModel,
-                    // @ts-ignore
-                    "password": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
-                    "platform": this.deviceData.deviceOS || ""
+            if (this.session) {
+                const res = await this.apiCaller(
+                    'POST',
+                    'http',
+                    {
+                        'accept-encoding': 'gzip'
+                    },
+                    {
+                        api_key: this.apiKey,
+                        sid: this.session,
+                        method: 'mobile_userAuth',
+                        output: 3,
+                        input: 3,
+                        network: this.deviceData.network,
+                        mobile_tracking: this.mobileTracking
+                    },
+                    {
+                        "consent_string": "",
+                        "custo_partner": "",
+                        "custo_version_id": "",
+                        "device_name": this.deviceData.deviceModel,
+                        "device_os": this.deviceData.deviceOS,
+                        "device_serial": this.deviceData.serial,
+                        "device_type": this.deviceData.deviceType,
+                        "google_play_services_availability": "0",
+                        "mail": this.userData.email,
+                        "model": this.deviceData.deviceModel,
+                        // @ts-ignore
+                        "password": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
+                        "platform": this.deviceData.deviceOS || ""
+                    }
+                );
+
+                //may be I should move this initialization
+                if (res.data.error.length == 0) {
+                    this.userData.arl = res.data.results.ARL;
                 }
-            );
 
-            //may be I should move this initialization
-            if (res.data.error.length == 0) {
-                this.userData.arl = res.data.results.ARL;
+                return res.data;
+            } else {
+                return new Error('Session is not defined. Use initSession.');
             }
-
-            return res.data;
         } catch (err) {
             throw new Error(err);
         }
@@ -208,40 +220,44 @@ export class Client {
 
     public async mobileUserAutoLog() {
         try {
-            const res = await this.apiCaller(
-                'POST',
-                'https',
-                {
-                    'accept-encoding': 'gzip',
-                    'Host': 'api.deezer.com',
-                    'Connection': 'Keep-Alive'
-                },
-                {
-                    api_key: this.apiKey,
-                    sid: this.session,
-                    method: 'mobile_userAutolog',
-                    output: 3,
-                    input: 3,
-                    network: this.deviceData.network,
-                    mobile_tracking: this.mobileTracking
-                },
-                {
-                    "ACCOUNT_ID": "",
-                    "ARL": this.userData.arl,
-                    "consent_string": "",
-                    "custo_partner": "",
-                    "custo_version_id": "",
-                    "device_name": this.deviceData.deviceModel,
-                    "device_os": this.deviceData.deviceOS,
-                    "device_serial": this.deviceData.serial,
-                    "device_type": this.deviceData.deviceType,
-                    "google_play_services_availability": "0",
-                    "model": this.deviceData.deviceModel,
-                    "platform": this.deviceData.deviceOS
-                }
-            );
+            if (this.session) {
+                const res = await this.apiCaller(
+                    'POST',
+                    'https',
+                    {
+                        'accept-encoding': 'gzip',
+                        'Host': 'api.deezer.com',
+                        'Connection': 'Keep-Alive'
+                    },
+                    {
+                        api_key: this.apiKey,
+                        sid: this.session,
+                        method: 'mobile_userAutolog',
+                        output: 3,
+                        input: 3,
+                        network: this.deviceData.network,
+                        mobile_tracking: this.mobileTracking
+                    },
+                    {
+                        "ACCOUNT_ID": "",
+                        "ARL": this.userData.arl,
+                        "consent_string": "",
+                        "custo_partner": "",
+                        "custo_version_id": "",
+                        "device_name": this.deviceData.deviceModel,
+                        "device_os": this.deviceData.deviceOS,
+                        "device_serial": this.deviceData.serial,
+                        "device_type": this.deviceData.deviceType,
+                        "google_play_services_availability": "0",
+                        "model": this.deviceData.deviceModel,
+                        "platform": this.deviceData.deviceOS
+                    }
+                );
 
-            return res.data;
+                return res.data;
+            } else {
+                return new Error('Session is not defined. Use initSession.');
+            }
         } catch (err) {
             throw new Error(err);
         }
@@ -249,27 +265,31 @@ export class Client {
 
     public async trialEnable() {
         try {
-            const res = await this.apiCaller(
-                'POST',
-                'https',
-                {
-                    'accept-encoding': 'gzip'
-                },
-                {
-                    api_key: this.apiKey,
-                    sid: this.session,
-                    method: 'trial_enable',
-                    output: 3,
-                    input: 3,
-                    network: this.deviceData.network,
-                    mobile_tracking: this.mobileTracking
-                },
-                {
-                    "ORIGIN": ""
-                }
-            );
+            if (this.session) {
+                const res = await this.apiCaller(
+                    'POST',
+                    'https',
+                    {
+                        'accept-encoding': 'gzip'
+                    },
+                    {
+                        api_key: this.apiKey,
+                        sid: this.session,
+                        method: 'trial_enable',
+                        output: 3,
+                        input: 3,
+                        network: this.deviceData.network,
+                        mobile_tracking: this.mobileTracking
+                    },
+                    {
+                        "ORIGIN": ""
+                    }
+                );
 
-            return res.data;
+                return res.data;
+            } else {
+                return new Error('Session is not defined. Use initSession.');
+            }
         } catch (err) {
             throw new Error(err);
         }
@@ -277,71 +297,75 @@ export class Client {
 
     public async logListen(nextMedia: MediaData, currentMedia: MediaData, pageContext: MediaData, listenTime: number, currentTime: number) {
         try {
-            const res = await this.apiCaller(
-                'POST',
-                'https',
-                {
-                    'accept-encoding': 'gzip'
-                },
-                {
-                    api_key: this.apiKey,
-                    sid: this.session,
-                    method: 'log.listen',
-                    output: 3,
-                    input: 3,
-                    network: this.deviceData.network,
-                    mobile_tracking: this.mobileTracking
-                },
-                {
-                    "next_media": {
-                        "media": {
-                            "id": nextMedia.id,
-                            "type": nextMedia.type
-                        }
+            if (this.session) {
+                const res = await this.apiCaller(
+                    'POST',
+                    'https',
+                    {
+                        'accept-encoding': 'gzip'
                     },
-                    "params": {
-                        "ctxt": {
-                            "c": pageContext.id,
-                            "id": pageContext.id,
-                            "t": pageContext.type
+                    {
+                        api_key: this.apiKey,
+                        sid: this.session,
+                        method: 'log.listen',
+                        output: 3,
+                        input: 3,
+                        network: this.deviceData.network,
+                        mobile_tracking: this.mobileTracking
+                    },
+                    {
+                        "next_media": {
+                            "media": {
+                                "id": nextMedia.id,
+                                "type": nextMedia.type
+                            }
                         },
-                        "dev": {
-                            "t": "30",
-                            "v": "OnePlus_A0001_9_6.1.18.94"
-                        },
-                        "device": {
-                            "cpu_count": this.deviceData.cpuCount,
-                            "cpu_max_frequency": this.deviceData.cpuMaxFrequency,
-                            "ram": this.deviceData.ram
-                        },
-                        "is_shuffle": false,
-                        "l_30sec": 0,
-                        "lt": listenTime,
-                        "media": {
-                            "format": currentMedia.format,
-                            "id": currentMedia.id,
-                            "type": currentMedia.type
-                        },
-                        "network": {
-                            "subtype": "wifi",
-                            "type": "LAN"
-                        },
-                        "repeat_type": "repeat_all",
-                        "stat": {
-                            "conn": "LAN",
-                            "media_format": currentMedia.format,
-                            "pause": 0,
-                            "player_version": "jukebox_exo_player_2",
-                            "seek": 0,
-                            "sync": 1
-                        },
-                        "ts_listen": currentTime,
-                        "type": 0
+                        "params": {
+                            "ctxt": {
+                                "c": pageContext.id,
+                                "id": pageContext.id,
+                                "t": pageContext.type
+                            },
+                            "dev": {
+                                "t": "30",
+                                "v": "OnePlus_A0001_9_6.1.18.94"
+                            },
+                            "device": {
+                                "cpu_count": this.deviceData.cpuCount,
+                                "cpu_max_frequency": this.deviceData.cpuMaxFrequency,
+                                "ram": this.deviceData.ram
+                            },
+                            "is_shuffle": false,
+                            "l_30sec": 0,
+                            "lt": listenTime,
+                            "media": {
+                                "format": currentMedia.format,
+                                "id": currentMedia.id,
+                                "type": currentMedia.type
+                            },
+                            "network": {
+                                "subtype": "wifi",
+                                "type": "LAN"
+                            },
+                            "repeat_type": "repeat_all",
+                            "stat": {
+                                "conn": "LAN",
+                                "media_format": currentMedia.format,
+                                "pause": 0,
+                                "player_version": "jukebox_exo_player_2",
+                                "seek": 0,
+                                "sync": 1
+                            },
+                            "ts_listen": currentTime,
+                            "type": 0
+                        }
                     }
-                }
-            );
+                );
 
-            return res.data;
+                return res.data;
+            } else {
+                return new Error('Session is not defined. Use initSession.');
+            }
         } catch (err) {
             throw new Error(err);
         }
