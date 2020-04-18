@@ -8,6 +8,8 @@ import {
     randHex
 } from './utils';
 import { config } from 'dotenv';
+import md5 from 'md5';
+import crypto from "crypto";
 
 config();
 
@@ -181,7 +183,7 @@ export class Client {
                     "custo_partner": "",
                     "custo_version_id": "",
                     "device_name": this.deviceData.deviceModel,
-                    "device_os": this.deviceData.platform,
+                    "device_os": this.deviceData.deviceOS,
                     "device_serial": this.deviceData.serial,
                     "device_type": this.deviceData.deviceType,
                     "google_play_services_availability": "0",
@@ -189,7 +191,7 @@ export class Client {
                     "model": this.deviceData.deviceModel,
                     // @ts-ignore
                     "password": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
-                    "platform": this.deviceData.platform || ""
+                    "platform": this.deviceData.deviceOS || ""
                 }
             );
 
@@ -230,12 +232,12 @@ export class Client {
                     "custo_partner": "",
                     "custo_version_id": "",
                     "device_name": this.deviceData.deviceModel,
-                    "device_os": this.deviceData.platform,
+                    "device_os": this.deviceData.deviceOS,
                     "device_serial": this.deviceData.serial,
                     "device_type": this.deviceData.deviceType,
                     "google_play_services_availability": "0",
                     "model": this.deviceData.deviceModel,
-                    "platform": this.deviceData.platform
+                    "platform": this.deviceData.deviceOS
                 }
             );
 
@@ -357,6 +359,44 @@ export class Client {
             throw new Error(err);
         }
     }
+
+    public generateMusicLoadLink(MD5Origin: string, songId: string, mediaVersion: string, trackType: string, i: number = 1) {
+        let str6;
+        let del = Buffer.alloc(1, 0xa4);
+        if (trackType !== '3') {
+            str6 = Buffer.alloc(0);
+        } else {
+            str6 = Buffer.concat([del, Buffer.from('1')]);
+        }
+
+        let str7 = Buffer.concat([
+            Buffer.from(MD5Origin),
+            del,
+            Buffer.from(i.toString()),
+            del,
+            Buffer.from(songId),
+            del,
+            Buffer.from(mediaVersion),
+            str6
+        ]);
+
+        let str8 = Buffer.concat([
+            Buffer.from(md5(str7)),
+            del,
+            str7,
+            del
+        ]);
+
+        // @ts-ignore
+        const cipher = crypto
+            .createCipheriv('aes-128-ecb', process.env.MUSIC_TOKEN_CIPHER_KEY, null)
+            .setAutoPadding(false);
+
+        let token: string = cipher.update(str8, undefined, 'hex');
+        token += cipher.final('hex');
+
+        return 'http://e-cdn-proxy-' + MD5Origin[0] + '.deezer.com/mobile/1/' + token;
+    };
 
     get getSession() {
         return this.session;

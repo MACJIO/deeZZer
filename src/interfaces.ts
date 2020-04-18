@@ -9,15 +9,15 @@ export interface AccountData {
 }
 
 export interface DeviceData {
-    platform: string;
-    platformVersion: string;
+    deviceOS: string;
+    deviseOSVersion: string;
+    androidID: string;
     deviceType: string;
     deviceModel: string;
     appVersion: string;
     lang: string;
     screenWidth?: number;
     screenHeight?: number;
-    androidID: string;
     uniqID: string;
     network: string;
     cpuCount: number;

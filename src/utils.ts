@@ -1,7 +1,6 @@
 import { config } from 'dotenv';
 import crypto from 'crypto';
 import { DeviceData } from './interfaces';
-import md5 from 'md5';
 
 //load .env file to process.env
 config();
@@ -11,44 +10,6 @@ const padding = (data: Buffer): Buffer => {
     data.copy(res);
 
     return res;
-};
-
-const generateLink = (MD5Origin: string, songId: string, mediaVersion: string, trackType: string, i: number = 1) => {
-    let str6;
-    let del = Buffer.alloc(1, 0xa4);
-    if (trackType !== '3') {
-        str6 = Buffer.alloc(0);
-    } else {
-        str6 = Buffer.concat([del, Buffer.from('1')]);
-    }
-
-    let str7 = Buffer.concat([
-        Buffer.from(MD5Origin),
-        del,
-        Buffer.from(i.toString()),
-        del,
-        Buffer.from(songId),
-        del,
-        Buffer.from(mediaVersion),
-        str6
-    ]);
-
-    let str8 = Buffer.concat([
-        Buffer.from(md5(str7)),
-        del,
-        str7,
-        del
-    ]);
-
-    // @ts-ignore
-    const cipher = crypto
-        .createCipheriv('aes-128-ecb', process.env.MUSIC_TOKEN_CIPHER_KEY, null)
-        .setAutoPadding(false);
-
-    let token: string = cipher.update(str8, undefined, 'hex');
-    token += cipher.final('hex');
-
-    return 'http://e-cdn-proxy-' + MD5Origin[0] + '.deezer.com/mobile/1/' + token;
 };
 
 const encryptPassword = (password: string, key: string): string => {
@@ -101,9 +62,9 @@ const generateAuthToken = (token: string, key: string): string => {
 
 const generateUserAgent = (deviceData: DeviceData): string => {
     if (deviceData) {
-        if (deviceData.platform === 'Android') {
+        if (deviceData.deviceOS === 'Android') {
             return 'Deezer/' + deviceData.appVersion +
-                ' (Android; ' + deviceData.platformVersion + '; ' +
+                ' (Android; ' + deviceData.deviseOSVersion + '; ' +
                 deviceData.deviceType + '; ' +
                 deviceData.lang + ') ' +
                 deviceData.deviceModel;
@@ -148,6 +109,5 @@ export {
     randHex,
     encryptPassword,
     decryptPassword,
-    padding,
-    generateLink
+    padding
 }
