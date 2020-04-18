@@ -21,9 +21,9 @@ export interface DeviceData {
     uniqID: string;
     network: string;
     cpuCount: number;
-    cpuMaxFrequency: number;
-    ram: number;
-    serial: string;
+    cpuMaxFrequency?: number;
+    ram?: number;
+    serial?: string;
 }
 
 export interface MediaData {
