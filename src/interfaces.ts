@@ -20,7 +20,7 @@ export interface DeviceData {
     screenHeight?: number;
     uniqID: string;
     network: string;
-    cpuCount: number;
+    cpuCount?: number;
     cpuMaxFrequency?: number;
     ram?: number;
     serial?: string;
