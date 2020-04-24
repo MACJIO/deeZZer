@@ -1,9 +1,7 @@
-import { config } from 'dotenv';
+// @ts-ignore
+import config from '../config.json';
 import crypto from 'crypto';
 import { DeviceData } from './interfaces';
-
-//load .env file to process.env
-config();
 
 const padding = (data: Buffer): Buffer => {
     const res = Buffer.alloc((data.length + 15) & ~0xF, 0);
@@ -38,7 +36,7 @@ const decryptPassword = (password: string, key: string): string => {
 
 const decryptToken = (token: string): string => {
     const decipher = crypto
-        .createDecipheriv('aes-128-ecb', <string>process.env.TOKEN_DECIPHER_KEY, null)
+        .createDecipheriv('aes-128-ecb', <string>config.TOKEN_DECIPHER_KEY, null)
         .setAutoPadding(false);
 
     // @ts-ignore
@@ -78,7 +76,7 @@ const generateUserAgent = (deviceData: DeviceData): string => {
 
 const generateMobileTracking = (deviceData: DeviceData) => {
     const mobileTracking = {
-        oursecret: process.env.MOBILE_TRACKING_SECRET,
+        oursecret: config.MOBILE_TRACKING_SECRET,
         androidID: deviceData.androidID,
         macAddress: '02:00:00:00:00:00',
         device_type: 'android',

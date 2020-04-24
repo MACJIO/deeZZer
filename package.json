@@ -6,7 +6,8 @@
   "scripts": {
     "start": "npm run build:live",
     "build": "tsc -p .",
-    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "test": "ts-node src/test.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,7 +20,6 @@
     "@types/axios": "^0.14.0",
     "@types/md5": "^2.2.0",
     "axios": "^0.19.2",
-    "dotenv": "^8.2.0",
     "md5": "^2.2.1"
   }
 }

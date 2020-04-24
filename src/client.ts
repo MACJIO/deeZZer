@@ -7,11 +7,10 @@ import {
     generateUserAgent,
     randHex
 } from './utils';
-import { config } from 'dotenv';
+// @ts-ignore
+import config from '../config.json'
 import md5 from 'md5';
 import crypto from "crypto";
-
-config();
 
 export class Client {
     private readonly userAgent: string;
@@ -23,14 +22,14 @@ export class Client {
     constructor(private readonly userData: AccountData, private readonly deviceData: DeviceData) {
         this.userAgent = generateUserAgent(this.deviceData);
         this.mobileTracking = generateMobileTracking(this.deviceData);
-        this.apiKey = process.env.ANDROID_API_KEY;
+        this.apiKey = config.ANDROID_API_KEY;
     }
 
     public apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, data?: {}) {
         return axios.request({
             url: '/gateway.php',
             method,
-            baseURL: type === 'http' ? process.env.HTTP_API_URL : process.env.HTTPS_API_URL,
+            baseURL: type === 'http' ? config.HTTP_API_URL : config.HTTPS_API_URL,
             headers: {
                 'User-Agent': this.userAgent,
                 ...headers
@@ -413,7 +412,7 @@ export class Client {
 
         // @ts-ignore
         const cipher = crypto
-            .createCipheriv('aes-128-ecb', process.env.MUSIC_TOKEN_CIPHER_KEY, null)
+            .createCipheriv('aes-128-ecb', config.MUSIC_TOKEN_CIPHER_KEY, null)
             .setAutoPadding(false);
 
         let token: string = cipher.update(str8, undefined, 'hex');

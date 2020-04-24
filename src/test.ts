@@ -48,7 +48,7 @@ const signUpAndGetFreeTrial = async () => {
 };
 
 const signIn = async () => {
-    // await client.initSession();
+    await client.initSession();
 
     console.log('Session Id:', client.getSession);
     console.log('Decrypted token:', client.getDecToken);
