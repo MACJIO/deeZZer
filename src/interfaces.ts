@@ -3,7 +3,6 @@ export interface AccountData {
     blogName?: string;
     email: string;
     password: string;
-    userId?: string;
     sex?: string;
     lang?: string;
 }

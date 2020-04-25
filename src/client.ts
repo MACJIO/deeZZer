@@ -16,6 +16,7 @@ export class Client {
     private readonly userAgent: string;
     private session: string | undefined;
     private arl: string | undefined;
+    private userId: string | undefined;
     private readonly apiKey: string | undefined;
     private readonly mobileTracking: string | undefined;
     private decryptedToken: string | undefined;
@@ -155,9 +156,7 @@ export class Client {
                     }
                 );
 
-                if (res.data.error.length == 0) {
-                    this.arl = res.data.results;
-                }
+                res.data.results.ARL ? this.arl = res.data.results.ARL : null;
 
                 return res.data;
             } else {
@@ -203,10 +202,7 @@ export class Client {
                     }
                 );
 
-                //may be I should move this initialization
-                if (res.data.error.length == 0) {
-                    this.arl = res.data.results.ARL;
-                }
+                res.data.results.ARL ? this.arl = res.data.results.ARL : null;
 
                 return res.data;
             } else {
@@ -254,6 +250,8 @@ export class Client {
                         }
                     );
 
+
+
                     return res.data;
                 } else {
                     return new Error("ARL is not defined.");
@@ -288,6 +286,8 @@ export class Client {
                         'ORIGIN': ''
                     }
                 );
+
+                res.data.results.USER_ID ? this.userId = res.data.results.USER_ID : null;
 
                 return res.data;
             } else {
@@ -413,7 +413,7 @@ export class Client {
     public async mobileSuggest(query: string, NB: string) {
         try {
             if (this.session) {
-                if (this.userData.userId) {
+                if (this.userId) {
                     const res = await this.apiCaller(
                         'POST',
                         'https',
@@ -433,7 +433,7 @@ export class Client {
                             'QUERY': query,
                             'NB': NB,
                             'TYPES': ['ALBUM', 'ARTIST', 'PLAYLIST', 'RADIO', 'SHOW', 'TRACK', 'USER', 'CHANNEL', 'LIVESTREAM', 'EPISODE'],
-                            'USER_ID': this.userData.userId
+                            'USER_ID': this.userId
                         }
                     );
 
