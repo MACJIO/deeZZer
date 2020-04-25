@@ -10,7 +10,7 @@ import {
 // @ts-ignore
 import config from '../config.json'
 import md5 from 'md5';
-import crypto from "crypto";
+import crypto from 'crypto';
 
 export class Client {
     private readonly userAgent: string;
@@ -144,13 +144,13 @@ export class Client {
                         mobile_tracking: this.mobileTracking
                     },
                     {
-                        "BIRTHDAY": this.userData.birthday,
-                        "BLOG_NAME": this.userData.blogName,
-                        "EMAIL": this.userData.email,
+                        'BIRTHDAY': this.userData.birthday,
+                        'BLOG_NAME': this.userData.blogName,
+                        'EMAIL': this.userData.email,
                         // @ts-ignore
-                        "PASSWORD": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
-                        "SEX": this.userData.sex,
-                        "lang": this.userData.lang
+                        'PASSWORD': encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
+                        'SEX': this.userData.sex,
+                        'lang': this.userData.lang
                     }
                 );
 
@@ -187,19 +187,19 @@ export class Client {
                         mobile_tracking: this.mobileTracking
                     },
                     {
-                        "consent_string": "",
-                        "custo_partner": "",
-                        "custo_version_id": "",
-                        "device_name": this.deviceData.deviceModel,
-                        "device_os": this.deviceData.deviceOS,
-                        "device_serial": this.deviceData.serial,
-                        "device_type": this.deviceData.deviceType,
-                        "google_play_services_availability": "0",
-                        "mail": this.userData.email,
-                        "model": this.deviceData.deviceModel,
+                        'consent_string': '',
+                        'custo_partner': '',
+                        'custo_version_id': '',
+                        'device_name': this.deviceData.deviceModel,
+                        'device_os': this.deviceData.deviceOS,
+                        'device_serial': this.deviceData.serial,
+                        'device_type': this.deviceData.deviceType,
+                        'google_play_services_availability': '0',
+                        'mail': this.userData.email,
+                        'model': this.deviceData.deviceModel,
                         // @ts-ignore
-                        "password": encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
-                        "platform": this.deviceData.deviceOS || ""
+                        'password': encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
+                        'platform': this.deviceData.deviceOS || ''
                     }
                 );
 
@@ -238,18 +238,18 @@ export class Client {
                         mobile_tracking: this.mobileTracking
                     },
                     {
-                        "ACCOUNT_ID": "",
-                        "ARL": this.userData.arl,
-                        "consent_string": "",
-                        "custo_partner": "",
-                        "custo_version_id": "",
-                        "device_name": this.deviceData.deviceModel,
-                        "device_os": this.deviceData.deviceOS,
-                        "device_serial": this.deviceData.serial,
-                        "device_type": this.deviceData.deviceType,
-                        "google_play_services_availability": "0",
-                        "model": this.deviceData.deviceModel,
-                        "platform": this.deviceData.deviceOS
+                        'ACCOUNT_ID': '',
+                        'ARL': this.userData.arl,
+                        'consent_string': '',
+                        'custo_partner': '',
+                        'custo_version_id': '',
+                        'device_name': this.deviceData.deviceModel,
+                        'device_os': this.deviceData.deviceOS,
+                        'device_serial': this.deviceData.serial,
+                        'device_type': this.deviceData.deviceType,
+                        'google_play_services_availability': '0',
+                        'model': this.deviceData.deviceModel,
+                        'platform': this.deviceData.deviceOS
                     }
                 );
 
@@ -281,7 +281,7 @@ export class Client {
                         mobile_tracking: this.mobileTracking
                     },
                     {
-                        "ORIGIN": ""
+                        'ORIGIN': ''
                     }
                 );
 
@@ -313,51 +313,160 @@ export class Client {
                         mobile_tracking: this.mobileTracking
                     },
                     {
-                        "next_media": {
-                            "media": {
-                                "id": nextMedia.id,
-                                "type": nextMedia.type
+                        'next_media': {
+                            'media': {
+                                'id': nextMedia.id,
+                                'type': nextMedia.type
                             }
                         },
-                        "params": {
-                            "ctxt": {
-                                "c": pageContext.id,
-                                "id": pageContext.id,
-                                "t": pageContext.type
+                        'params': {
+                            'ctxt': {
+                                'c': pageContext.id,
+                                'id': pageContext.id,
+                                't': pageContext.type
                             },
-                            "dev": {
-                                "t": "30",
-                                "v": "OnePlus_A0001_9_6.1.18.94"
+                            'dev': {
+                                't': '30',
+                                'v': 'OnePlus_A0001_9_6.1.18.94'
                             },
-                            "device": {
-                                "cpu_count": this.deviceData.cpuCount,
-                                "cpu_max_frequency": this.deviceData.cpuMaxFrequency,
-                                "ram": this.deviceData.ram
+                            'device': {
+                                'cpu_count': this.deviceData.cpuCount,
+                                'cpu_max_frequency': this.deviceData.cpuMaxFrequency,
+                                'ram': this.deviceData.ram
                             },
-                            "is_shuffle": false,
-                            "l_30sec": 0,
-                            "lt": listenTime,
-                            "media": {
-                                "format": currentMedia.format,
-                                "id": currentMedia.id,
-                                "type": currentMedia.type
+                            'is_shuffle': false,
+                            'l_30sec': 0,
+                            'lt': listenTime,
+                            'media': {
+                                'format': currentMedia.format,
+                                'id': currentMedia.id,
+                                'type': currentMedia.type
                             },
-                            "network": {
-                                "subtype": "wifi",
-                                "type": "LAN"
+                            'network': {
+                                'subtype': 'wifi',
+                                'type': 'LAN'
                             },
-                            "repeat_type": "repeat_all",
-                            "stat": {
-                                "conn": "LAN",
-                                "media_format": currentMedia.format,
-                                "pause": 0,
-                                "player_version": "jukebox_exo_player_2",
-                                "seek": 0,
-                                "sync": 1
+                            'repeat_type': 'repeat_all',
+                            'stat': {
+                                'conn': 'LAN',
+                                'media_format': currentMedia.format,
+                                'pause': 0,
+                                'player_version': 'jukebox_exo_player_2',
+                                'seek': 0,
+                                'sync': 1
                             },
-                            "ts_listen": currentTime,
-                            "type": 0
+                            'ts_listen': currentTime,
+                            'type': 0
                         }
+                    }
+                );
+
+                return res.data;
+            } else {
+                return new Error('Session is not defined. Use initSession.');
+            }
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async mobileAddSongsAndGetSongs(playListId: string, songs: Array<string>, NB: string) {
+        try {
+            if (this.session) {
+                const res = await this.apiCaller(
+                    'POST',
+                    'https',
+                    {
+                        'accept-encoding': 'gzip'
+                    },
+                    {
+                        api_key: this.apiKey,
+                        sid: this.session,
+                        method: 'mobile_addSongsAndGetSongs',
+                        output: 3,
+                        input: 3,
+                        network: this.deviceData.network,
+                        mobile_tracking: this.mobileTracking
+                    },
+                    {
+                        'PLAYLIST_ID': '7568612802',
+                        'SONGS': [
+                            ...songs.map((song, i) => [song, i.toString()])
+                        ],
+                        'NB': NB
+                    }
+                );
+
+                return res.data;
+            } else {
+                return new Error('Session is not defined. Use initSession.');
+            }
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async mobileSuggest(query: string, NB: string) {
+        try {
+            if (this.session) {
+                if (this.userData.userId) {
+                    const res = await this.apiCaller(
+                        'POST',
+                        'https',
+                        {
+                            'accept-encoding': 'gzip'
+                        },
+                        {
+                            api_key: this.apiKey,
+                            sid: this.session,
+                            method: 'mobile_suggest',
+                            output: 3,
+                            input: 3,
+                            network: this.deviceData.network,
+                            mobile_tracking: this.mobileTracking
+                        },
+                        {
+                            'QUERY': query,
+                            'NB': NB,
+                            'TYPES': ['ALBUM', 'ARTIST', 'PLAYLIST', 'RADIO', 'SHOW', 'TRACK', 'USER', 'CHANNEL', 'LIVESTREAM', 'EPISODE'],
+                            'USER_ID': this.userData.userId
+                        }
+                    );
+
+                    return res.data;
+                } else {
+                    return new Error('User id is undefined.');
+                }
+            } else {
+                return new Error('Session is not defined. Use initSession.');
+            }
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async playlistGetSongs(playListId: string, start: string, NB: string) {
+        try {
+            if (this.session) {
+                const res = await this.apiCaller(
+                    'POST',
+                    'https',
+                    {
+                        'accept-encoding': 'gzip'
+                    },
+                    {
+                        api_key: this.apiKey,
+                        sid: this.session,
+                        method: 'playlist_getSongs',
+                        output: 3,
+                        input: 3,
+                        network: this.deviceData.network,
+                        mobile_tracking: this.mobileTracking
+                    },
+                    {
+                        'PLAYLIST_ID': playListId,
+                        'START': start,
+                        'NB': NB
                     }
                 );
 
