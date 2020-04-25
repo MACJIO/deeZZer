@@ -82,5 +82,3 @@ const listenSongWithOutLoad = async () => {
     const res = await client.logListen(nextSong, currSong, pageCtx, 30, Math.floor(Date.now() / 1000));
     console.log('Log.listen res:', res);
 };
-
-signIn();
