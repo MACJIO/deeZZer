@@ -7,7 +7,6 @@ import {
     generateUserAgent,
     randHex
 } from './utils';
-// @ts-ignore
 import config from '../config.json'
 import md5 from 'md5';
 import crypto from 'crypto';
