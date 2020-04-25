@@ -6,7 +6,6 @@ export interface AccountData {
     userId?: string;
     sex?: string;
     lang?: string;
-    arl?: string;
 }
 
 export interface DeviceData {

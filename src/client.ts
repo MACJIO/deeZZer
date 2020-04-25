@@ -15,6 +15,7 @@ import crypto from 'crypto';
 export class Client {
     private readonly userAgent: string;
     private session: string | undefined;
+    private arl: string | undefined;
     private readonly apiKey: string | undefined;
     private readonly mobileTracking: string | undefined;
     private decryptedToken: string | undefined;
@@ -154,9 +155,8 @@ export class Client {
                     }
                 );
 
-                //may be I should move this initialization
                 if (res.data.error.length == 0) {
-                    this.userData.arl = res.data.results;
+                    this.arl = res.data.results;
                 }
 
                 return res.data;
@@ -205,7 +205,7 @@ export class Client {
 
                 //may be I should move this initialization
                 if (res.data.error.length == 0) {
-                    this.userData.arl = res.data.results.ARL;
+                    this.arl = res.data.results.ARL;
                 }
 
                 return res.data;
@@ -220,40 +220,44 @@ export class Client {
     public async mobileUserAutoLog() {
         try {
             if (this.session) {
-                const res = await this.apiCaller(
-                    'POST',
-                    'https',
-                    {
-                        'accept-encoding': 'gzip',
-                        'Host': 'api.deezer.com',
-                        'Connection': 'Keep-Alive'
-                    },
-                    {
-                        api_key: this.apiKey,
-                        sid: this.session,
-                        method: 'mobile_userAutolog',
-                        output: 3,
-                        input: 3,
-                        network: this.deviceData.network,
-                        mobile_tracking: this.mobileTracking
-                    },
-                    {
-                        'ACCOUNT_ID': '',
-                        'ARL': this.userData.arl,
-                        'consent_string': '',
-                        'custo_partner': '',
-                        'custo_version_id': '',
-                        'device_name': this.deviceData.deviceModel,
-                        'device_os': this.deviceData.deviceOS,
-                        'device_serial': this.deviceData.serial,
-                        'device_type': this.deviceData.deviceType,
-                        'google_play_services_availability': '0',
-                        'model': this.deviceData.deviceModel,
-                        'platform': this.deviceData.deviceOS
-                    }
-                );
+                if (this.arl) {
+                    const res = await this.apiCaller(
+                        'POST',
+                        'https',
+                        {
+                            'accept-encoding': 'gzip',
+                            'Host': 'api.deezer.com',
+                            'Connection': 'Keep-Alive'
+                        },
+                        {
+                            api_key: this.apiKey,
+                            sid: this.session,
+                            method: 'mobile_userAutolog',
+                            output: 3,
+                            input: 3,
+                            network: this.deviceData.network,
+                            mobile_tracking: this.mobileTracking
+                        },
+                        {
+                            'ACCOUNT_ID': '',
+                            'ARL': this.arl,
+                            'consent_string': '',
+                            'custo_partner': '',
+                            'custo_version_id': '',
+                            'device_name': this.deviceData.deviceModel,
+                            'device_os': this.deviceData.deviceOS,
+                            'device_serial': this.deviceData.serial,
+                            'device_type': this.deviceData.deviceType,
+                            'google_play_services_availability': '0',
+                            'model': this.deviceData.deviceModel,
+                            'platform': this.deviceData.deviceOS
+                        }
+                    );
 
-                return res.data;
+                    return res.data;
+                } else {
+                    return new Error("ARL is not defined.");
+                }
             } else {
                 return new Error('Session is not defined. Use initSession.');
             }
@@ -539,6 +543,6 @@ export class Client {
     }
 
     get getARL() {
-        return this.userData.arl;
+        return this.arl;
     }
 }
