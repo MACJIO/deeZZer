@@ -62,7 +62,7 @@ const generateUserAgent = (deviceData: DeviceData): string => {
     if (deviceData) {
         if (deviceData.deviceOS === 'Android') {
             return 'Deezer/' + deviceData.appVersion +
-                ' (Android; ' + deviceData.deviseOSVersion + '; ' +
+                ' (Android; ' + deviceData.deviceOSVersion + '; ' +
                 deviceData.deviceType + '; ' +
                 deviceData.lang + ') ' +
                 deviceData.deviceModel;
