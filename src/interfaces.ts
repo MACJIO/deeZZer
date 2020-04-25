@@ -11,7 +11,7 @@ export interface AccountData {
 
 export interface DeviceData {
     deviceOS: string;
-    deviseOSVersion: string;
+    deviceOSVersion: string;
     androidID: string;
     deviceType: string;
     deviceModel: string;
