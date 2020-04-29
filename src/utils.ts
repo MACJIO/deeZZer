@@ -99,6 +99,19 @@ const randHex = (length: number): string => {
     return res;
 };
 
+const generateNetwork = (mcc: string, mnc: string): string => {
+    const data = mcc + '+++' + mnc + '+++' + Math.floor(Date.now() / 1000);
+
+    const cipher = crypto
+        .createCipheriv('aes-128-ecb', config.NETWORK_CIPHER_KEY, null)
+        .setAutoPadding(false);
+
+    let network: string = cipher.update(padding(Buffer.from(data)), undefined, 'hex');
+    network += cipher.final('hex');
+
+    return network;
+}
+
 export {
     decryptToken,
     generateAuthToken,
@@ -107,5 +120,6 @@ export {
     randHex,
     encryptPassword,
     decryptPassword,
-    padding
+    padding,
+    generateNetwork
 }
