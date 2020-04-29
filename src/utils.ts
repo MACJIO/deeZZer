@@ -99,7 +99,7 @@ const randHex = (length: number): string => {
     return res;
 };
 
-const generateNetwork = (mcc: string, mnc: string): string => {
+const generateNetwork = (mcc: string = '000', mnc: string = '000'): string => {
     const data = mcc + '+++' + mnc + '+++' + Math.floor(Date.now() / 1000);
 
     const cipher = crypto

@@ -1,11 +1,12 @@
 import {DeviceData, AccountData, MediaData} from './interfaces';
 import axios, { Method } from 'axios';
 import {
-    decryptToken, encryptPassword,
+    decryptToken,
+    encryptPassword,
     generateAuthToken,
     generateMobileTracking,
+    generateNetwork,
     generateUserAgent,
-    randHex
 } from './utils';
 import config from '../config.json'
 import md5 from 'md5';
@@ -51,7 +52,7 @@ export class Client {
                     'Connection': 'Keep-Alive'
                 },
                 {
-                    network: this.deviceData.network,
+                    network: generateNetwork(),
                     api_key: this.apiKey,
                     version: this.deviceData.appVersion,
                     lang: this.deviceData.lang,
@@ -109,7 +110,7 @@ export class Client {
                         method: 'deezer_emailCheck',
                         output: 3,
                         input: 3,
-                        network: this.deviceData.network,
+                        network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {
@@ -141,7 +142,7 @@ export class Client {
                         method: 'user_create',
                         output: 3,
                         input: 3,
-                        network: this.deviceData.network,
+                        network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {
@@ -181,7 +182,7 @@ export class Client {
                         method: 'mobile_userAuth',
                         output: 3,
                         input: 3,
-                        network: this.deviceData.network,
+                        network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {
@@ -230,7 +231,7 @@ export class Client {
                             method: 'mobile_userAutolog',
                             output: 3,
                             input: 3,
-                            network: this.deviceData.network,
+                            network: generateNetwork(),
                             mobile_tracking: this.mobileTracking
                         },
                         {
@@ -278,7 +279,7 @@ export class Client {
                         method: 'trial_enable',
                         output: 3,
                         input: 3,
-                        network: this.deviceData.network,
+                        network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {
@@ -312,7 +313,7 @@ export class Client {
                         method: 'log.listen',
                         output: 3,
                         input: 3,
-                        network: this.deviceData.network,
+                        network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {
@@ -388,7 +389,7 @@ export class Client {
                         method: 'mobile_addSongsAndGetSongs',
                         output: 3,
                         input: 3,
-                        network: this.deviceData.network,
+                        network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {
@@ -425,7 +426,7 @@ export class Client {
                             method: 'mobile_suggest',
                             output: 3,
                             input: 3,
-                            network: this.deviceData.network,
+                            network: generateNetwork(),
                             mobile_tracking: this.mobileTracking
                         },
                         {
@@ -463,7 +464,7 @@ export class Client {
                         method: 'playlist_getSongs',
                         output: 3,
                         input: 3,
-                        network: this.deviceData.network,
+                        network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {

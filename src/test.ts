@@ -23,7 +23,6 @@ const deviceData = {
     lang: 'us',
     appVersion: '6.1.18.94',
     androidID: randHex(16),
-    network: randHex(64),
     uniqID: randHex(32),
     serial: randHex(64)
 };

@@ -18,11 +18,12 @@ export interface DeviceData {
     screenWidth?: number;
     screenHeight?: number;
     uniqID: string;
-    network: string;
     cpuCount?: number;
     cpuMaxFrequency?: number;
     ram?: number;
     serial?: string;
+    mcc?: string;
+    mnc?: string;
 }
 
 export interface MediaData {
