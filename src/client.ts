@@ -546,4 +546,8 @@ export class Client {
     get getARL() {
         return this.arl;
     }
+
+    get getUserId() {
+        return this.userId;
+    }
 }
