@@ -156,7 +156,7 @@ export class Client {
                     }
                 );
 
-                res.data.results.ARL ? this.arl = res.data.results.ARL : null;
+                res.data.error.length === 0 ? this.arl = res.data.results : null;
 
                 return res.data;
             } else {
