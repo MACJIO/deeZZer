@@ -203,6 +203,7 @@ export class Client {
                 );
 
                 res.data.results.ARL ? this.arl = res.data.results.ARL : null;
+                res.data.results.USER_ID ? this.userId = res.data.results.USER_ID : null;
 
                 return res.data;
             } else {
