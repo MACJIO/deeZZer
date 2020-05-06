@@ -19,7 +19,10 @@
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/md5": "^2.2.0",
+    "@types/pg": "^7.14.3",
     "axios": "^0.19.2",
-    "md5": "^2.2.1"
+    "md5": "^2.2.1",
+    "pg": "^8.0.3",
+    "random-lorem": "^1.0.4"
   }
 }

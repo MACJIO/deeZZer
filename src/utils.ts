@@ -1,7 +1,10 @@
-// @ts-ignore
-import config from '../config.json';
 import crypto from 'crypto';
 import { DeviceData } from './client/interfaces';
+
+// @ts-ignore
+import randomLorem from 'random-lorem';
+
+import config from '../config.json';
 
 const padding = (data: Buffer): Buffer => {
     const res = Buffer.alloc((data.length + 15) & ~0xF, 0);
@@ -36,7 +39,7 @@ const decryptPassword = (password: string, key: string): string => {
 
 const decryptToken = (token: string): string => {
     const decipher = crypto
-        .createDecipheriv('aes-128-ecb', <string>config.TOKEN_DECIPHER_KEY, null)
+        .createDecipheriv('aes-128-ecb', <string>config.APP.TOKEN_DECIPHER_KEY, null)
         .setAutoPadding(false);
 
     // @ts-ignore
@@ -76,7 +79,7 @@ const generateUserAgent = (deviceData: DeviceData): string => {
 
 const generateMobileTracking = (deviceData: DeviceData) => {
     const mobileTracking = {
-        oursecret: config.MOBILE_TRACKING_SECRET,
+        oursecret: config.APP.MOBILE_TRACKING_SECRET,
         androidID: deviceData.androidID,
         macAddress: '02:00:00:00:00:00',
         device_type: 'android',
@@ -103,14 +106,66 @@ const generateNetwork = (mcc: string = '000', mnc: string = '000'): string => {
     const data = mcc + '+++' + mnc + '+++' + Math.floor(Date.now() / 1000);
 
     const cipher = crypto
-        .createCipheriv('aes-128-ecb', config.NETWORK_CIPHER_KEY, null)
+        .createCipheriv('aes-128-ecb', config.APP.NETWORK_CIPHER_KEY, null)
         .setAutoPadding(false);
 
     let network: string = cipher.update(padding(Buffer.from(data)), undefined, 'hex');
     network += cipher.final('hex');
 
     return network;
-}
+};
+
+const emailDomains = {
+    /* Default domains included */
+    default: ['aol.com', 'att.net', 'comcast.net', 'facebook.com', 'gmail.com', 'gmx.com', 'googlemail.com',
+    'google.com', 'hotmail.com', 'hotmail.co.uk', 'mac.com', 'me.com', 'mail.com', 'msn.com',
+    'live.com', 'sbcglobal.net', 'verizon.net', 'yahoo.com', 'yahoo.co.uk'],
+
+    /* United States ISP domains */
+    US: ['bellsouth.net', 'charter.net', 'cox.net', 'earthlink.net', 'juno.com'],
+
+    /* British ISP domains */
+    GB: ['btinternet.com', 'virginmedia.com', 'blueyonder.co.uk', 'freeserve.co.uk', 'live.co.uk',
+    'ntlworld.com', 'o2.co.uk', 'orange.net', 'sky.com', 'talktalk.co.uk', 'tiscali.co.uk',
+    'virgin.net', 'wanadoo.co.uk', 'bt.com'],
+
+    /* French ISP domains */
+    FR: ['hotmail.fr', 'live.fr', 'laposte.net', 'yahoo.fr', 'wanadoo.fr', 'orange.fr', 'gmx.fr', 'sfr.fr', 'neuf.fr', 'free.fr'],
+
+    /* German ISP domains */
+    DE: ['gmx.de', 'hotmail.de', 'live.de', 'online.de', 't-online.de' /* T-Mobile */, 'web.de', 'yahoo.de'],
+
+    /* Italian ISP domains */
+    IT: ['libero.it', 'virgilio.it', 'hotmail.it', 'aol.it', 'tiscali.it', 'alice.it', 'live.it', 'yahoo.it', 'email.it', 'tin.it', 'poste.it', 'teletu.it'],
+
+    /* Russian ISP domains */
+    RU: ['mail.ru', 'rambler.ru', 'yandex.ru', 'ya.ru', 'list.ru'],
+
+    /* Belgian ISP domains */
+    BE: ['hotmail.be', 'live.be', 'skynet.be', 'voo.be', 'tvcablenet.be', 'telenet.be'],
+
+    /* Argentinian ISP domains */
+    AR: ['hotmail.com.ar', 'live.com.ar', 'yahoo.com.ar', 'fibertel.com.ar', 'speedy.com.ar', 'arnet.com.ar'],
+
+    /* Domains used in Mexico */
+    MX: ['yahoo.com.mx', 'live.com.mx', 'hotmail.es', 'hotmail.com.mx', 'prodigy.net.mx'],
+
+    /* Domains used in Canada */
+    CA: ['yahoo.ca', 'hotmail.ca', 'bell.net', 'shaw.ca', 'sympatico.ca', 'rogers.com'],
+
+    /* Domains used in Brazil */
+    BR: ['yahoo.com.br', 'hotmail.com.br', 'outlook.com.br', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'itelefonica.com.br', 'r7.com', 'zipmail.com.br', 'globo.com', 'globomail.com', 'oi.com.br']
+};
+
+const generateEmail = function (country: string = 'default') {
+    !emailDomains.hasOwnProperty(country) ? country = 'default' : null;
+
+    // @ts-ignore
+    let domains = emailDomains[country];
+    console.log(domains);
+
+    return randomLorem({min: 3, max: 10}) + '@' + domains[randVal(domains.length)];
+};
 
 export {
     decryptToken,
@@ -121,5 +176,6 @@ export {
     encryptPassword,
     decryptPassword,
     padding,
-    generateNetwork
+    generateNetwork,
+    generateEmail
 }
