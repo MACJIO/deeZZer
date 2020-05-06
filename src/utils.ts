@@ -1,7 +1,7 @@
 // @ts-ignore
 import config from '../config.json';
 import crypto from 'crypto';
-import { DeviceData } from './interfaces';
+import { DeviceData } from './client/interfaces';
 
 const padding = (data: Buffer): Buffer => {
     const res = Buffer.alloc((data.length + 15) & ~0xF, 0);

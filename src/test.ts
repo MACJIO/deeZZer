@@ -1,7 +1,7 @@
 import { randHex } from './utils';
-import { MediaData } from './interfaces';
+import { MediaData } from './client/interfaces';
 
-const { Client } = require('./client');
+const { Client } = require('./client/client');
 
 //test user data
 const userData = {

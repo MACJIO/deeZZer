@@ -7,8 +7,8 @@ import {
     generateMobileTracking,
     generateNetwork,
     generateUserAgent,
-} from './utils';
-import config from '../config.json'
+} from '../utils';
+import config from '../../config.json'
 import md5 from 'md5';
 import crypto from 'crypto';
 
