@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { DeviceData } from './client/interfaces';
+import { AccountData, DeviceData } from './client/interfaces';
 
 // @ts-ignore
 import randomLorem from 'random-lorem';
@@ -157,14 +157,30 @@ const emailDomains = {
     BR: ['yahoo.com.br', 'hotmail.com.br', 'outlook.com.br', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'itelefonica.com.br', 'r7.com', 'zipmail.com.br', 'globo.com', 'globomail.com', 'oi.com.br']
 };
 
-const generateEmail = function (country: string = 'default') {
+const generateEmail = (country: string = 'default') => {
     !emailDomains.hasOwnProperty(country) ? country = 'default' : null;
 
     // @ts-ignore
     let domains = emailDomains[country];
     console.log(domains);
 
-    return randomLorem({min: 3, max: 10}) + '@' + domains[randVal(domains.length)];
+    return randomLorem({ min: 3, max: 10 }) + '@' + domains[randVal(domains.length)];
+};
+
+const generateBirthday = () => {
+    let year = 2020 - randVal(50) + 14;
+    return year + '-01-01';
+};
+
+const generateAccount = (country?: string): AccountData => {
+    return {
+        blogName: <string>randomLorem({ min: 4, max: 10 }),
+        email: generateEmail(country),
+        password: randomLorem({ min: 8, max: 12 }),
+        birthday: generateBirthday(),
+        lang: country?.toLocaleLowerCase() || 'us',
+        sex: new Date().toString().indexOf('54') !== -1 ? 'F' : 'M'
+    }
 };
 
 export {
@@ -177,5 +193,5 @@ export {
     decryptPassword,
     padding,
     generateNetwork,
-    generateEmail
+    generateAccount
 }
