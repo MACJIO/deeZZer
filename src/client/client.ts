@@ -312,7 +312,9 @@ export class Client {
         }
     }
 
-    public async logListen(nextMedia: MediaData, currentMedia: MediaData, pageContext: MediaData, listenTime: number, currentTime: number) {
+    public async logListen(
+        nextMedia: MediaData, currentMedia: MediaData, pageContext: MediaData, listenTime: number, currentTime: number
+    ) {
         try {
             if (this.session) {
                 const res = await this.apiCaller(
@@ -345,7 +347,7 @@ export class Client {
                             },
                             'dev': {
                                 't': '30',
-                                'v': 'OnePlus_A0001_9_6.1.18.94'
+                                'v': this.device.model + randHex(3)
                             },
                             'device': {
                                 'cpu_count': this.device.cpuCount || '',
@@ -381,7 +383,7 @@ export class Client {
 
                 return res.data;
             } else {
-                return new Error('Session is not defined. Use initSession.');
+                console.log('Session is not defined. Use initSession.');
             }
         } catch (err) {
             throw new Error(err);

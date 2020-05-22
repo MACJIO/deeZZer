@@ -1,5 +1,5 @@
 import { Client } from '../client/client';
-import { AccountData, DeviceData } from '../client/interfaces';
+import {AccountData, DeviceData, MediaData} from '../client/interfaces';
 
 enum BotState {
     offline,
@@ -35,6 +35,16 @@ export class Bot {
             return await this.client.trialEnable();
         } catch (err) {
 
+        }
+    }
+
+    public async listen(
+        nextMedia: MediaData, currentMedia: MediaData, pageContext: MediaData, listenTime: number, currentTime: number
+    ) {
+        try {
+            return await this.client.logListen(nextMedia, currentMedia, pageContext, listenTime, currentTime);
+        } catch (err) {
+            console.log(err);
         }
     }
 
