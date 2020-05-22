@@ -61,10 +61,10 @@ const setUserId = async (email: string, userId: string | undefined) => {
     }
 }
 
-const getUnusedBots = async (n: number) => {
+const getBotsPool = async (n: number) => {
     try {
         const res = await pool.query(
-            'select id from bots where state!=\'active\' and state!=\'banned\' limit $1',
+            'select id from bots where (free_trial_start is not null) and state = \'offline\' limit $1',
             [ n ]
         );
 
@@ -107,7 +107,7 @@ export const Store = {
     insertAccount,
     insertBot,
     setUserId,
-    getUnusedBots,
+    getBotsPool,
     getBotDataById,
     setBotFreeTrial
 }
