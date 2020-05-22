@@ -6,7 +6,7 @@ import {
     generateAuthToken,
     generateMobileTracking,
     generateNetwork,
-    generateUserAgent,
+    generateUserAgent, randHex,
 } from '../utils';
 import config from '../../config.json'
 import md5 from 'md5';
@@ -21,17 +21,30 @@ export class Client {
     private readonly mobileTracking: string | undefined;
     private decryptedToken: string | undefined;
 
-    constructor(private readonly userData: AccountData, private readonly deviceData: DeviceData) {
-        this.userAgent = generateUserAgent(this.deviceData);
-        this.mobileTracking = generateMobileTracking(this.deviceData);
-        this.apiKey = config.ANDROID_API_KEY;
+    constructor(private readonly account: AccountData, private readonly device: DeviceData) {
+        if (!device.OS) {
+            this.device.OS = {
+                name: 'Android',
+                version: '8.0.0',
+                androidId: randHex(16)
+            }
+        }
+        if (!device.appVersion)
+            this.device.appVersion = '6.1.18.94';
+        if (!device.uniqID)
+            this.device.uniqID = randHex(32);
+        if (!device.serial)
+            this.device.serial = randHex(64);
+        this.userAgent = generateUserAgent(this.device);
+        this.mobileTracking = generateMobileTracking(this.device);
+        this.apiKey = config.APP.ANDROID_API_KEY;
     }
 
     public apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, data?: {}) {
         return axios.request({
             url: '/gateway.php',
             method,
-            baseURL: type === 'http' ? config.HTTP_API_URL : config.HTTPS_API_URL,
+            baseURL: type === 'http' ? config.APP.HTTP_API_URL : config.APP.HTTPS_API_URL,
             headers: {
                 'User-Agent': this.userAgent,
                 ...headers
@@ -54,13 +67,13 @@ export class Client {
                 {
                     network: generateNetwork(),
                     api_key: this.apiKey,
-                    version: this.deviceData.appVersion,
-                    lang: this.deviceData.lang,
+                    version: this.device.appVersion,
+                    lang: this.device.lang,
                     buildId: 'android_v6',
-                    screenWidth: this.deviceData.screenWidth || '1080',
-                    screenHeight: this.deviceData.screenHeight || '1776',
+                    screenWidth: this.device.screenWidth || '1080',
+                    screenHeight: this.device.screenHeight || '1776',
                     output: 3,
-                    uniq_id: this.deviceData.uniqID,
+                    uniq_id: this.device.uniqID,
                     method: 'mobile_auth'
                 }
             );
@@ -114,7 +127,7 @@ export class Client {
                         mobile_tracking: this.mobileTracking
                     },
                     {
-                        'EMAIL': this.userData.email
+                        'EMAIL': this.account.email
                     }
                 );
 
@@ -146,13 +159,13 @@ export class Client {
                         mobile_tracking: this.mobileTracking
                     },
                     {
-                        'BIRTHDAY': this.userData.birthday,
-                        'BLOG_NAME': this.userData.blogName,
-                        'EMAIL': this.userData.email,
+                        'BIRTHDAY': this.account.birthday,
+                        'BLOG_NAME': this.account.blogName,
+                        'EMAIL': this.account.email,
                         // @ts-ignore
-                        'PASSWORD': encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
-                        'SEX': this.userData.sex,
-                        'lang': this.userData.lang
+                        'PASSWORD': encryptPassword(this.account.password, this.decryptedToken.substr(80, 16)),
+                        'SEX': this.account.sex,
+                        'lang': this.account.lang
                     }
                 );
 
@@ -189,16 +202,16 @@ export class Client {
                         'consent_string': '',
                         'custo_partner': '',
                         'custo_version_id': '',
-                        'device_name': this.deviceData.deviceModel,
-                        'device_os': this.deviceData.deviceOS,
-                        'device_serial': this.deviceData.serial,
-                        'device_type': this.deviceData.deviceType,
+                        'device_name': this.device.model,
+                        'device_os': this.device.OS?.name,
+                        'device_serial': this.device.serial,
+                        'device_type': this.device.type,
                         'google_play_services_availability': '0',
-                        'mail': this.userData.email,
-                        'model': this.deviceData.deviceModel,
+                        'mail': this.account.email,
+                        'model': this.device.model,
                         // @ts-ignore
-                        'password': encryptPassword(this.userData.password, this.decryptedToken.substr(80, 16)),
-                        'platform': this.deviceData.deviceOS || ''
+                        'password': encryptPassword(this.account.password, this.decryptedToken.substr(80, 16)),
+                        'platform': this.device.OS || ''
                     }
                 );
 
@@ -241,13 +254,13 @@ export class Client {
                             'consent_string': '',
                             'custo_partner': '',
                             'custo_version_id': '',
-                            'device_name': this.deviceData.deviceModel,
-                            'device_os': this.deviceData.deviceOS,
-                            'device_serial': this.deviceData.serial,
-                            'device_type': this.deviceData.deviceType,
+                            'device_name': this.device.model,
+                            'device_os': this.device.OS?.name,
+                            'device_serial': this.device.serial,
+                            'device_type': this.device.type,
                             'google_play_services_availability': '0',
-                            'model': this.deviceData.deviceModel,
-                            'platform': this.deviceData.deviceOS
+                            'model': this.device.model,
+                            'platform': this.device.OS?.name
                         }
                     );
 
@@ -335,9 +348,9 @@ export class Client {
                                 'v': 'OnePlus_A0001_9_6.1.18.94'
                             },
                             'device': {
-                                'cpu_count': this.deviceData.cpuCount,
-                                'cpu_max_frequency': this.deviceData.cpuMaxFrequency,
-                                'ram': this.deviceData.ram
+                                'cpu_count': this.device.cpuCount || '',
+                                'cpu_max_frequency': this.device.cpuMaxFrequency || '',
+                                'ram': this.device.ram || ''
                             },
                             'is_shuffle': false,
                             'l_30sec': 0,
@@ -493,7 +506,7 @@ export class Client {
 
             this.session = (await this.checkToken(authToken)).results;
         } catch (err) {
-            throw new Error(err);
+            console.log(err);
         }
     }
 
@@ -526,7 +539,7 @@ export class Client {
 
         // @ts-ignore
         const cipher = crypto
-            .createCipheriv('aes-128-ecb', config.MUSIC_TOKEN_CIPHER_KEY, null)
+            .createCipheriv('aes-128-ecb', config.APP.MUSIC_TOKEN_CIPHER_KEY, null)
             .setAutoPadding(false);
 
         let token: string = cipher.update(str8, undefined, 'hex');
