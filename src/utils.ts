@@ -63,12 +63,12 @@ const generateAuthToken = (token: string, key: string): string => {
 
 const generateUserAgent = (deviceData: DeviceData): string => {
     if (deviceData) {
-        if (deviceData.deviceOS === 'Android') {
+        if (deviceData.OS?.name === 'Android') {
             return 'Deezer/' + deviceData.appVersion +
-                ' (Android; ' + deviceData.deviceOSVersion + '; ' +
-                deviceData.deviceType + '; ' +
+                ' (Android; ' + deviceData.OS?.version + '; ' +
+                deviceData.type + '; ' +
                 deviceData.lang + ') ' +
-                deviceData.deviceModel;
+                deviceData.name;
         } else {
             throw new Error('Unimplemented for IOS.');
         }
@@ -80,7 +80,7 @@ const generateUserAgent = (deviceData: DeviceData): string => {
 const generateMobileTracking = (deviceData: DeviceData) => {
     const mobileTracking = {
         oursecret: config.APP.MOBILE_TRACKING_SECRET,
-        androidID: deviceData.androidID,
+        androidID: deviceData.OS?.androidId,
         macAddress: '02:00:00:00:00:00',
         device_type: 'android',
         app_id: 'deezer.android.app'
@@ -162,13 +162,12 @@ const generateEmail = (country: string = 'default') => {
 
     // @ts-ignore
     let domains = emailDomains[country];
-    console.log(domains);
 
     return randomLorem({ min: 3, max: 10 }) + '@' + domains[randVal(domains.length)];
 };
 
 const generateBirthday = () => {
-    let year = 2020 - randVal(50) + 14;
+    let year = 2020 - randVal(50) - 17;
     return year + '-01-01';
 };
 

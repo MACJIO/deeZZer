@@ -2,8 +2,9 @@ import { Client } from '../client/client';
 import { AccountData, DeviceData } from '../client/interfaces';
 
 enum BotState {
-    online,
-    offline
+    offline,
+    active,
+    banned
 }
 
 export class Bot {
@@ -27,10 +28,14 @@ export class Bot {
     }
 
     public async getFreeTrial() {
-        //getting ARL for next method
-        await this.client.mobileUserAutoLog();
+        try {
+            //getting ARL for next method
+            await this.client.mobileUserAutoLog();
 
-        return await this.client.trialEnable();
+            return await this.client.trialEnable();
+        } catch (err) {
+
+        }
     }
 
     public async addSongToPlaylist(playlistId: string, songId: string) {
