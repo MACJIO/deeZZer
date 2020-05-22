@@ -1,29 +1,32 @@
 export interface AccountData {
-    birthday?: string;
-    blogName?: string;
+    birthday: string;
+    blogName: string;
     email: string;
     password: string;
-    sex?: string;
-    lang?: string;
+    sex: string;
+    lang: string;
+}
+
+export interface OS {
+    name: string;
+    version: string;
+    androidId?: string;
 }
 
 export interface DeviceData {
-    deviceOS: string;
-    deviceOSVersion: string;
-    androidID: string;
-    deviceType: string;
-    deviceModel: string;
-    appVersion: string;
+    OS?: OS;
+    type: string;
+    name: string;
+    model: string;
+    appVersion?: string;
     lang: string;
     screenWidth?: number;
     screenHeight?: number;
-    uniqID: string;
+    uniqID?: string;
     cpuCount?: number;
     cpuMaxFrequency?: number;
     ram?: number;
     serial?: string;
-    mcc?: string;
-    mnc?: string;
 }
 
 export interface MediaData {
