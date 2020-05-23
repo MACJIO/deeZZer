@@ -1,5 +1,6 @@
-import {DeviceData, AccountData, MediaData} from './interfaces';
-import axios, { Method } from 'axios';
+import {DeviceData, AccountData, MediaData, Proxy} from '../interfaces';
+import axios, { Method, AxiosRequestConfig } from 'axios';
+import * as tunnel from 'tunnel';
 import {
     decryptToken,
     encryptPassword,
@@ -20,8 +21,12 @@ export class Client {
     private readonly apiKey: string | undefined;
     private readonly mobileTracking: string | undefined;
     private decryptedToken: string | undefined;
+    private proxy: Proxy | undefined;
 
-    constructor(private readonly account: AccountData, private readonly device: DeviceData) {
+    constructor(
+        private readonly account: AccountData,
+        private readonly device: DeviceData
+    ) {
         if (!device.OS) {
             this.device.OS = {
                 name: 'Android',
@@ -40,18 +45,46 @@ export class Client {
         this.apiKey = config.APP.ANDROID_API_KEY;
     }
 
+    public setProxy(proxy: Proxy) {
+        this.proxy = proxy;
+    }
+
     public apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, data?: {}) {
-        return axios.request({
+        let axiosConfig: AxiosRequestConfig = {
             url: '/gateway.php',
             method,
-            baseURL: type === 'http' ? config.APP.HTTP_API_URL : config.APP.HTTPS_API_URL,
             headers: {
                 'User-Agent': this.userAgent,
                 ...headers
             },
             params,
             data
-        });
+        };
+        if (type == 'http') {
+            axiosConfig.baseURL = config.APP.HTTP_API_URL;
+            if (this.proxy) {
+                axiosConfig.httpAgent = tunnel.httpOverHttp({
+                    proxy: {
+                        host: this.proxy.host,
+                        port: this.proxy.port
+                    }
+                });
+                axiosConfig.proxy = false;
+            }
+        } else {
+            axiosConfig.baseURL = config.APP.HTTPS_API_URL;
+            if (this.proxy) {
+                axiosConfig.baseURL = config.APP.HTTPS_API_URL_WITH_PORT;
+                axiosConfig.httpAgent = tunnel.httpsOverHttp({
+                    proxy: {
+                        host: this.proxy.host,
+                        port: this.proxy.port
+                    }
+                });
+                axiosConfig.proxy = false;
+            }
+        }
+        return axios.request(axiosConfig);
     }
 
     public async mobileAuth() {
@@ -383,7 +416,7 @@ export class Client {
 
                 return res.data;
             } else {
-                console.log('Session is not defined. Use initSession.');
+                await this.initSession();
             }
         } catch (err) {
             throw new Error(err);
@@ -564,5 +597,9 @@ export class Client {
 
     get getUserId() {
         return this.userId;
+    }
+
+    get getProxy() {
+        return this.proxy ? this.proxy : null;
     }
 }

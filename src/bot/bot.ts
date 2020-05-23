@@ -1,5 +1,5 @@
 import { Client } from '../client/client';
-import {AccountData, DeviceData, MediaData} from '../client/interfaces';
+import {AccountData, DeviceData, MediaData, Proxy} from '../interfaces';
 
 enum BotState {
     offline,
@@ -13,6 +13,10 @@ export class Bot {
 
     constructor(readonly accountData: AccountData, readonly deviceData: DeviceData) {
         this.client = new Client(accountData, deviceData);
+    }
+
+    public setProxy(proxy: Proxy) {
+        this.client.setProxy(proxy);
     }
 
     public async signUp() {

@@ -1,5 +1,5 @@
 import pool from './connect';
-import { AccountData } from '../client/interfaces';
+import { AccountData } from '../interfaces';
 
 const getRandomDevice = async () => {
     try {

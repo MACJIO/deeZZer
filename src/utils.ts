@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { AccountData, DeviceData } from './client/interfaces';
+import { AccountData, DeviceData } from './interfaces';
 
 // @ts-ignore
 import randomLorem from 'random-lorem';

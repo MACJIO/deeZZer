@@ -35,3 +35,10 @@ export interface MediaData {
     format?: string;
 }
 
+export type Protocol = 'http' | 'https'
+
+export interface Proxy {
+    host: string;
+    port: number;
+    protocol?: Protocol;
+}

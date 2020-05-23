@@ -1,7 +1,7 @@
 import { Bot } from '../bot/bot';
 import { generateAccount, randHex } from '../utils';
 import { Store } from '../store/store'
-import { DeviceData } from '../client/interfaces';
+import { DeviceData } from '../interfaces';
 
 
 export class Registrator {
