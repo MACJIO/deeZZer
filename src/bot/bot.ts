@@ -1,5 +1,6 @@
 import { Client } from '../client/client';
-import {AccountData, DeviceData, MediaData, Proxy} from '../interfaces';
+import { AccountData, DeviceData, MediaData, Proxy } from '../interfaces';
+import { delay, randHex } from '../utils';
 
 enum BotState {
     offline,
@@ -58,6 +59,36 @@ export class Bot {
 
     public async addSongsToPlaylist(playlistId: string, songIds: Array<string>) {
         await this.client.mobileAddSongsAndGetSongs(playlistId, songIds, "2000");
+    }
+
+    public async listenAlbum(album: Object) {
+        for (let i = 0; i < album.songs.length; i++) {
+            let rand = randHex(5);
+            let song = album.songs[i];
+            console.time('Listen' + rand + ' track ' + song.id);
+            let next =
+                i + 1 == album.songs.length ?
+                    { id: album.songs[0].id, type: 'song' } :
+                    { id: album.songs[i+1].id, type: 'song' };
+
+            await delay(song.duration);
+
+            await this.listen(
+                next,
+                {
+                    id: song.id,
+                    type: 'song',
+                    format: 'MP3_128'
+                },
+                {
+                    id: album.context.id,
+                    type: album.context.type
+                },
+                song.duration,
+                Math.floor(Date.now() / 1000)
+            );
+            console.timeEnd('Listen' + rand + ' track ' + song.id);
+        }
     }
 
     get getState() {
