@@ -1,5 +1,7 @@
 import { Client } from '../client/client';
-import { AccountData, DeviceData, MediaData, Proxy } from '../interfaces';
+import {
+    AccountData, Album, DeviceData, MediaData, Proxy
+} from '../interfaces';
 import { delay, randHex } from '../utils';
 
 enum BotState {
@@ -61,7 +63,7 @@ export class Bot {
         await this.client.mobileAddSongsAndGetSongs(playlistId, songIds, "2000");
     }
 
-    public async listenAlbum(album: Object) {
+    public async listenAlbum(album: Album) {
         for (let i = 0; i < album.songs.length; i++) {
             let rand = randHex(5);
             let song = album.songs[i];
@@ -89,6 +91,11 @@ export class Bot {
             );
             console.timeEnd('Listen' + rand + ' track ' + song.id);
         }
+    }
+
+    public async listenLoopAlbum(album: Album, n: number) {
+        for (let i = 0; i < n; i++)
+            await this.listenAlbum(album);
     }
 
     get getState() {
