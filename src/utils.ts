@@ -182,6 +182,10 @@ const generateAccount = (country?: string): AccountData => {
     }
 };
 
+const delay = async (seconds: number) => {
+    return await new Promise(resolve => setTimeout(resolve, seconds * 1000));
+}
+
 export {
     decryptToken,
     generateAuthToken,
@@ -192,5 +196,7 @@ export {
     decryptPassword,
     padding,
     generateNetwork,
-    generateAccount
+    generateAccount,
+    randVal,
+    delay
 }
