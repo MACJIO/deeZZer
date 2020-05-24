@@ -1,7 +1,6 @@
 import { Store } from '../store/store';
 import { Bot } from '../bot/bot';
 import { AccountData, Album, DeviceData } from '../interfaces';
-import { randVal } from '../utils';
 import ProxyLists, { Proxy, Options } from 'proxy-lists';
 
 
@@ -32,6 +31,11 @@ const initBotById = async (id: number): Promise<Bot> => {
     return new Bot(account, device);
 };
 
+/**
+ * Gets free trial for bot by id in postgres
+ *
+ * @param id
+ */
 const getFreeTrial = async (id: number) => {
     const bot = await initBotById(id);
 
@@ -79,3 +83,38 @@ const getProxy = (options: Partial<Options>): Promise<Proxy[]> => {
             })
     })
 }
+
+/**
+ * Gets n bots from pool and starts to listen album for m times.
+ *
+ * @param botN     Number of bots.
+ * @param listensN Number of listens per album
+ * @param album
+ */
+const massiveAlbumListen = async (botN: number, listensN: number, album: Album) => {
+    console.time('Get unused bot ids');
+    const ids = await Store.getBotsPool(botN) || [];
+    console.log("Used bots", ids);
+    console.timeEnd('Get unused bot ids');
+
+    console.time('Init bots pool');
+    let botPromises = [];
+    for (let i = 0; i < ids.length; i++)
+        botPromises.push(initBotById(ids[i].id))
+    const pool = await Promise.all(botPromises);
+    console.timeEnd('Init bots pool');
+
+    console.time('Init bot sessions');
+    let botSessionsPromises = [];
+    for (let i = 0; i < pool.length; i++)
+        botSessionsPromises.push(pool[i].signIn());
+    await Promise.all(botSessionsPromises);
+    console.timeEnd('Init bot sessions');
+
+    console.time('Massive listen loop');
+    let listenLoopPromises = [];
+    for (let i = 0; i < pool.length; i++)
+        listenLoopPromises.push(pool[i].listenLoopAlbum(album, listensN));
+    await Promise.all(listenLoopPromises);
+    console.timeEnd('Massive listen loop');
+};
