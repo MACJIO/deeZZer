@@ -49,7 +49,7 @@ export class Client {
         this.proxy = proxy;
     }
 
-    public apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, data?: {}) {
+    public async apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, data?: {}) {
         let axiosConfig: AxiosRequestConfig = {
             url: '/gateway.php',
             method,
@@ -84,12 +84,27 @@ export class Client {
                 axiosConfig.proxy = false;
             }
         }
-        return axios.request(axiosConfig);
+
+        try {
+            const res = await axios.request(axiosConfig);
+
+            if ('NEED_API_AUTH_REQUIRED' in res.data.error)
+                if (res.data.error.NEED_API_AUTH_REQUIRED === 'Require API auth') {
+                    await this.initSession();
+                    console.log('Session not defined. Try to reinitialize.');
+                    // @ts-ignore
+                    params.sid = this.session;
+                    await this.apiCaller(method, type, headers, params, data);
+                }
+            return res.data;
+        } catch (err) {
+            throw err;
+        }
     }
 
     public async mobileAuth() {
         try {
-            let res = await this.apiCaller(
+            return await this.apiCaller(
                 'GET',
                 'http',
                 {
@@ -110,8 +125,6 @@ export class Client {
                     method: 'mobile_auth'
                 }
             );
-
-            return res.data;
         } catch (err) {
             throw new Error(err);
         }
@@ -119,7 +132,7 @@ export class Client {
 
     public async checkToken(authToken: string) {
         try {
-            let res = await this.apiCaller(
+            return await this.apiCaller(
                 'GET',
                 'http',
                 {
@@ -134,8 +147,6 @@ export class Client {
                     method: 'api_checkToken'
                 }
             );
-
-            return res.data;
         } catch (err) {
             throw new Error(err);
         }
@@ -143,31 +154,25 @@ export class Client {
 
     public async emailCheck() {
         try {
-            if (this.session) {
-                const res = await this.apiCaller(
-                    'POST',
-                    'https',
-                    {
-                        'accept-encoding': 'gzip'
-                    },
-                    {
-                        api_key: this.apiKey,
-                        sid: this.session,
-                        method: 'deezer_emailCheck',
-                        output: 3,
-                        input: 3,
-                        network: generateNetwork(),
-                        mobile_tracking: this.mobileTracking
-                    },
-                    {
-                        'EMAIL': this.account.email
-                    }
-                );
-
-                return res.data;
-            } else {
-                return new Error('Session is not defined. Use initSession.');
-            }
+            return await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'deezer_emailCheck',
+                    output: 3,
+                    input: 3,
+                    network: generateNetwork(),
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    'EMAIL': this.account.email
+                }
+            );
         } catch (err) {
             throw new Error(err);
         }
@@ -175,39 +180,35 @@ export class Client {
 
     public async userCreate() {
         try {
-            if (this.session) {
-                const res = await this.apiCaller(
-                    'POST',
-                    'https',
-                    {
-                        'accept-encoding': 'gzip'
-                    },
-                    {
-                        api_key: this.apiKey,
-                        sid: this.session,
-                        method: 'user_create',
-                        output: 3,
-                        input: 3,
-                        network: generateNetwork(),
-                        mobile_tracking: this.mobileTracking
-                    },
-                    {
-                        'BIRTHDAY': this.account.birthday,
-                        'BLOG_NAME': this.account.blogName,
-                        'EMAIL': this.account.email,
-                        // @ts-ignore
-                        'PASSWORD': encryptPassword(this.account.password, this.decryptedToken.substr(80, 16)),
-                        'SEX': this.account.sex,
-                        'lang': this.account.lang
-                    }
-                );
+            const data = await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'user_create',
+                    output: 3,
+                    input: 3,
+                    network: generateNetwork(),
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    'BIRTHDAY': this.account.birthday,
+                    'BLOG_NAME': this.account.blogName,
+                    'EMAIL': this.account.email,
+                    // @ts-ignore
+                    'PASSWORD': encryptPassword(this.account.password, this.decryptedToken.substr(80, 16)),
+                    'SEX': this.account.sex,
+                    'lang': this.account.lang
+                }
+            );
 
-                res.data.error.length === 0 ? this.arl = res.data.results : null;
+            data.error.length === 0 ? this.arl = data.results : null;
 
-                return res.data;
-            } else {
-                return new Error('Session is not defined. Use initSession.');
-            }
+            return data;
         } catch (err) {
             throw new Error(err);
         }
@@ -215,23 +216,70 @@ export class Client {
 
     public async mobileUserAuth() {
         try {
-            if (this.session) {
-                const res = await this.apiCaller(
+            const data = await this.apiCaller(
+                'POST',
+                'http',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'mobile_userAuth',
+                    output: 3,
+                    input: 3,
+                    network: generateNetwork(),
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    'consent_string': '',
+                    'custo_partner': '',
+                    'custo_version_id': '',
+                    'device_name': this.device.model,
+                    'device_os': this.device.OS?.name,
+                    'device_serial': this.device.serial,
+                    'device_type': this.device.type,
+                    'google_play_services_availability': '0',
+                    'mail': this.account.email,
+                    'model': this.device.model,
+                    // @ts-ignore
+                    'password': encryptPassword(this.account.password, this.decryptedToken.substr(80, 16)),
+                    'platform': this.device.OS || ''
+                }
+            );
+
+            data.results.ARL ? this.arl = data.results.ARL : null;
+            data.results.USER_ID ? this.userId = data.results.USER_ID : null;
+
+            return data;
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async mobileUserAutoLog() {
+        try {
+            if (this.arl) {
+                return await this.apiCaller(
                     'POST',
-                    'http',
+                    'https',
                     {
-                        'accept-encoding': 'gzip'
+                        'accept-encoding': 'gzip',
+                        'Host': 'api.deezer.com',
+                        'Connection': 'Keep-Alive'
                     },
                     {
                         api_key: this.apiKey,
                         sid: this.session,
-                        method: 'mobile_userAuth',
+                        method: 'mobile_userAutolog',
                         output: 3,
                         input: 3,
                         network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {
+                        'ACCOUNT_ID': '',
+                        'ARL': this.arl,
                         'consent_string': '',
                         'custo_partner': '',
                         'custo_version_id': '',
@@ -240,71 +288,12 @@ export class Client {
                         'device_serial': this.device.serial,
                         'device_type': this.device.type,
                         'google_play_services_availability': '0',
-                        'mail': this.account.email,
                         'model': this.device.model,
-                        // @ts-ignore
-                        'password': encryptPassword(this.account.password, this.decryptedToken.substr(80, 16)),
-                        'platform': this.device.OS || ''
+                        'platform': this.device.OS?.name
                     }
                 );
-
-                res.data.results.ARL ? this.arl = res.data.results.ARL : null;
-                res.data.results.USER_ID ? this.userId = res.data.results.USER_ID : null;
-
-                return res.data;
             } else {
-                return new Error('Session is not defined. Use initSession.');
-            }
-        } catch (err) {
-            throw new Error(err);
-        }
-    }
-
-    public async mobileUserAutoLog() {
-        try {
-            if (this.session) {
-                if (this.arl) {
-                    const res = await this.apiCaller(
-                        'POST',
-                        'https',
-                        {
-                            'accept-encoding': 'gzip',
-                            'Host': 'api.deezer.com',
-                            'Connection': 'Keep-Alive'
-                        },
-                        {
-                            api_key: this.apiKey,
-                            sid: this.session,
-                            method: 'mobile_userAutolog',
-                            output: 3,
-                            input: 3,
-                            network: generateNetwork(),
-                            mobile_tracking: this.mobileTracking
-                        },
-                        {
-                            'ACCOUNT_ID': '',
-                            'ARL': this.arl,
-                            'consent_string': '',
-                            'custo_partner': '',
-                            'custo_version_id': '',
-                            'device_name': this.device.model,
-                            'device_os': this.device.OS?.name,
-                            'device_serial': this.device.serial,
-                            'device_type': this.device.type,
-                            'google_play_services_availability': '0',
-                            'model': this.device.model,
-                            'platform': this.device.OS?.name
-                        }
-                    );
-
-
-
-                    return res.data;
-                } else {
-                    return new Error("ARL is not defined.");
-                }
-            } else {
-                return new Error('Session is not defined. Use initSession.');
+                return new Error("ARL is not defined.");
             }
         } catch (err) {
             throw new Error(err);
@@ -313,33 +302,29 @@ export class Client {
 
     public async trialEnable() {
         try {
-            if (this.session) {
-                const res = await this.apiCaller(
-                    'POST',
-                    'https',
-                    {
-                        'accept-encoding': 'gzip'
-                    },
-                    {
-                        api_key: this.apiKey,
-                        sid: this.session,
-                        method: 'trial_enable',
-                        output: 3,
-                        input: 3,
-                        network: generateNetwork(),
-                        mobile_tracking: this.mobileTracking
-                    },
-                    {
-                        'ORIGIN': ''
-                    }
-                );
+            const data = await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'trial_enable',
+                    output: 3,
+                    input: 3,
+                    network: generateNetwork(),
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    'ORIGIN': ''
+                }
+            );
 
-                res.data.results.USER_ID ? this.userId = res.data.results.USER_ID : null;
+            data.results.USER_ID ? this.userId = data.results.USER_ID : null;
 
-                return res.data;
-            } else {
-                return new Error('Session is not defined. Use initSession.');
-            }
+            return data;
         } catch (err) {
             throw new Error(err);
         }
@@ -349,75 +334,69 @@ export class Client {
         nextMedia: MediaData, currentMedia: MediaData, pageContext: MediaData, listenTime: number, currentTime: number
     ) {
         try {
-            if (this.session) {
-                const res = await this.apiCaller(
-                    'POST',
-                    'https',
-                    {
-                        'accept-encoding': 'gzip'
-                    },
-                    {
-                        api_key: this.apiKey,
-                        sid: this.session,
-                        method: 'log.listen',
-                        output: 3,
-                        input: 3,
-                        network: generateNetwork(),
-                        mobile_tracking: this.mobileTracking
-                    },
-                    {
-                        'next_media': {
-                            'media': {
-                                'id': nextMedia.id,
-                                'type': nextMedia.type
-                            }
-                        },
-                        'params': {
-                            'ctxt': {
-                                'c': pageContext.id,
-                                'id': pageContext.id,
-                                't': pageContext.type
-                            },
-                            'dev': {
-                                't': '30',
-                                'v': this.device.model + randHex(3)
-                            },
-                            'device': {
-                                'cpu_count': this.device.cpuCount || '',
-                                'cpu_max_frequency': this.device.cpuMaxFrequency || '',
-                                'ram': this.device.ram || ''
-                            },
-                            'is_shuffle': false,
-                            'l_30sec': 0,
-                            'lt': listenTime,
-                            'media': {
-                                'format': currentMedia.format,
-                                'id': currentMedia.id,
-                                'type': currentMedia.type
-                            },
-                            'network': {
-                                'subtype': 'wifi',
-                                'type': 'LAN'
-                            },
-                            'repeat_type': 'repeat_all',
-                            'stat': {
-                                'conn': 'LAN',
-                                'media_format': currentMedia.format,
-                                'pause': 0,
-                                'player_version': 'jukebox_exo_player_2',
-                                'seek': 0,
-                                'sync': 1
-                            },
-                            'ts_listen': currentTime,
-                            'type': 0
+            return await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'log.listen',
+                    output: 3,
+                    input: 3,
+                    network: generateNetwork(),
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    'next_media': {
+                        'media': {
+                            'id': nextMedia.id,
+                            'type': nextMedia.type
                         }
+                    },
+                    'params': {
+                        'ctxt': {
+                            'c': pageContext.id,
+                            'id': pageContext.id,
+                            't': pageContext.type
+                        },
+                        'dev': {
+                            't': '30',
+                            'v': this.device.model + randHex(3)
+                        },
+                        'device': {
+                            'cpu_count': this.device.cpuCount || '',
+                            'cpu_max_frequency': this.device.cpuMaxFrequency || '',
+                            'ram': this.device.ram || ''
+                        },
+                        'is_shuffle': false,
+                        'l_30sec': 0,
+                        'lt': listenTime,
+                        'media': {
+                            'format': currentMedia.format,
+                            'id': currentMedia.id,
+                            'type': currentMedia.type
+                        },
+                        'network': {
+                            'subtype': 'wifi',
+                            'type': 'LAN'
+                        },
+                        'repeat_type': 'repeat_all',
+                        'stat': {
+                            'conn': 'LAN',
+                            'media_format': currentMedia.format,
+                            'pause': 0,
+                            'player_version': 'jukebox_exo_player_2',
+                            'seek': 0,
+                            'sync': 1
+                        },
+                        'ts_listen': currentTime,
+                        'type': 0
                     }
-                );
-
-                return res.data;
-            } else {
-                await this.initSession();
-            }
+                }
+            );
         } catch (err) {
             throw new Error(err);
         }
@@ -425,8 +404,38 @@ export class Client {
 
     public async mobileAddSongsAndGetSongs(playListId: string, songs: Array<string>, NB: string) {
         try {
-            if (this.session) {
-                const res = await this.apiCaller(
+            return await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'mobile_addSongsAndGetSongs',
+                    output: 3,
+                    input: 3,
+                    network: generateNetwork(),
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    'PLAYLIST_ID': '7568612802',
+                    'SONGS': [
+                        ...songs.map((song, i) => [song, i.toString()])
+                    ],
+                    'NB': NB
+                }
+            );
+        } catch (err) {
+            throw new Error(err);
+        }
+    }
+
+    public async mobileSuggest(query: string, NB: string) {
+        try {
+            if (this.userId) {
+                return await this.apiCaller(
                     'POST',
                     'https',
                     {
@@ -435,63 +444,21 @@ export class Client {
                     {
                         api_key: this.apiKey,
                         sid: this.session,
-                        method: 'mobile_addSongsAndGetSongs',
+                        method: 'mobile_suggest',
                         output: 3,
                         input: 3,
                         network: generateNetwork(),
                         mobile_tracking: this.mobileTracking
                     },
                     {
-                        'PLAYLIST_ID': '7568612802',
-                        'SONGS': [
-                            ...songs.map((song, i) => [song, i.toString()])
-                        ],
-                        'NB': NB
+                        'QUERY': query,
+                        'NB': NB,
+                        'TYPES': ['ALBUM', 'ARTIST', 'PLAYLIST', 'RADIO', 'SHOW', 'TRACK', 'USER', 'CHANNEL', 'LIVESTREAM', 'EPISODE'],
+                        'USER_ID': this.userId
                     }
                 );
-
-                return res.data;
             } else {
-                return new Error('Session is not defined. Use initSession.');
-            }
-        } catch (err) {
-            throw new Error(err);
-        }
-    }
-
-    public async mobileSuggest(query: string, NB: string) {
-        try {
-            if (this.session) {
-                if (this.userId) {
-                    const res = await this.apiCaller(
-                        'POST',
-                        'https',
-                        {
-                            'accept-encoding': 'gzip'
-                        },
-                        {
-                            api_key: this.apiKey,
-                            sid: this.session,
-                            method: 'mobile_suggest',
-                            output: 3,
-                            input: 3,
-                            network: generateNetwork(),
-                            mobile_tracking: this.mobileTracking
-                        },
-                        {
-                            'QUERY': query,
-                            'NB': NB,
-                            'TYPES': ['ALBUM', 'ARTIST', 'PLAYLIST', 'RADIO', 'SHOW', 'TRACK', 'USER', 'CHANNEL', 'LIVESTREAM', 'EPISODE'],
-                            'USER_ID': this.userId
-                        }
-                    );
-
-                    return res.data;
-                } else {
-                    return new Error('User id is undefined.');
-                }
-            } else {
-                return new Error('Session is not defined. Use initSession.');
+                return new Error('User id is undefined.');
             }
         } catch (err) {
             throw new Error(err);
@@ -500,33 +467,27 @@ export class Client {
 
     public async playlistGetSongs(playListId: string, start: string, NB: string) {
         try {
-            if (this.session) {
-                const res = await this.apiCaller(
-                    'POST',
-                    'https',
-                    {
-                        'accept-encoding': 'gzip'
-                    },
-                    {
-                        api_key: this.apiKey,
-                        sid: this.session,
-                        method: 'playlist_getSongs',
-                        output: 3,
-                        input: 3,
-                        network: generateNetwork(),
-                        mobile_tracking: this.mobileTracking
-                    },
-                    {
-                        'PLAYLIST_ID': playListId,
-                        'START': start,
-                        'NB': NB
-                    }
-                );
-
-                return res.data;
-            } else {
-                return new Error('Session is not defined. Use initSession.');
-            }
+            return await this.apiCaller(
+                'POST',
+                'https',
+                {
+                    'accept-encoding': 'gzip'
+                },
+                {
+                    api_key: this.apiKey,
+                    sid: this.session,
+                    method: 'playlist_getSongs',
+                    output: 3,
+                    input: 3,
+                    network: generateNetwork(),
+                    mobile_tracking: this.mobileTracking
+                },
+                {
+                    'PLAYLIST_ID': playListId,
+                    'START': start,
+                    'NB': NB
+                }
+            );
         } catch (err) {
             throw new Error(err);
         }
@@ -600,6 +561,6 @@ export class Client {
     }
 
     get getProxy() {
-        return this.proxy ? this.proxy : null;
+        return this.proxy || null;
     }
 }
