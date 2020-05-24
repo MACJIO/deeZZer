@@ -35,6 +35,16 @@ export interface MediaData {
     format?: string;
 }
 
+export interface Song {
+    id: string;
+    duration: number;
+}
+
+export interface Album {
+    songs: Song[];
+    context: MediaData;
+}
+
 export type Protocol = 'http' | 'https'
 
 export interface Proxy {
