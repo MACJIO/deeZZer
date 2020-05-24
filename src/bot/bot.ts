@@ -18,22 +18,36 @@ export class Bot {
         this.client = new Client(accountData, deviceData);
     }
 
+    /**
+     * Sets bot proxy.
+     *
+     * @param proxy
+     */
     public setProxy(proxy: Proxy) {
         this.client.setProxy(proxy);
     }
 
+    /**
+     * Sings up bot.
+     */
     public async signUp() {
         await this.client.initSession();
 
         return await this.client.userCreate();
     }
 
+    /**
+     * Signs in bot.
+     */
     public async signIn() {
         await this.client.initSession();
 
         return await this.client.mobileUserAuth();
     }
 
+    /**
+     * Gets free trial for bot.
+     */
     public async getFreeTrial() {
         try {
             //getting ARL for next method
@@ -45,6 +59,15 @@ export class Bot {
         }
     }
 
+    /**
+     * Emulates listen for one track.
+     *
+     * @param nextMedia
+     * @param currentMedia
+     * @param pageContext
+     * @param listenTime
+     * @param currentTime
+     */
     public async listen(
         nextMedia: MediaData, currentMedia: MediaData, pageContext: MediaData, listenTime: number, currentTime: number
     ) {
@@ -63,6 +86,11 @@ export class Bot {
         await this.client.mobileAddSongsAndGetSongs(playlistId, songIds, "2000");
     }
 
+    /**
+     * Emulates full album listening.
+     *
+     * @param album
+     */
     public async listenAlbum(album: Album) {
         for (let i = 0; i < album.songs.length; i++) {
             let rand = randHex(5);
@@ -93,15 +121,29 @@ export class Bot {
         }
     }
 
+    /**
+     * Emulates album listen for n times.
+     *
+     * @param album
+     * @param n
+     */
     public async listenLoopAlbum(album: Album, n: number) {
         for (let i = 0; i < n; i++)
             await this.listenAlbum(album);
     }
 
+    /**
+     * Gets bot state.
+     */
     get getState() {
         return this.state;
     }
 
+    /**
+     * Sets bot state
+     *
+     * @param state
+     */
     set setState(state: BotState) {
         this.state = state;
     }
