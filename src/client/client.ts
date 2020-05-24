@@ -45,10 +45,24 @@ export class Client {
         this.apiKey = config.APP.ANDROID_API_KEY;
     }
 
+    /**
+     * Sets proxy for client.
+     *
+     * @param {Proxy} proxy
+     */
     public setProxy(proxy: Proxy) {
         this.proxy = proxy;
     }
 
+    /**
+     * Calls deezer API. If the session has not been initialized, initializes it.
+     *
+     * @param {Method}           method
+     * @param {'http' | 'https'} type
+     * @param {Object}           headers
+     * @param {Object}           params  Query params.
+     * @param {Object}           data    Optional. Request payload.
+     */
     public async apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, data?: {}) {
         let axiosConfig: AxiosRequestConfig = {
             url: '/gateway.php',
@@ -102,6 +116,9 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that asks for TOKEN.
+     */
     public async mobileAuth() {
         try {
             return await this.apiCaller(
@@ -130,6 +147,11 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API methods that asks for session id.
+     *
+     * @param authToken Generated using TOKEN.
+     */
     public async checkToken(authToken: string) {
         try {
             return await this.apiCaller(
@@ -152,6 +174,9 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that validates email.
+     */
     public async emailCheck() {
         try {
             return await this.apiCaller(
@@ -178,6 +203,9 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that sings up user.
+     */
     public async userCreate() {
         try {
             const data = await this.apiCaller(
@@ -214,6 +242,10 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that sings in user.
+     * Also it inits user id and ARL.
+     */
     public async mobileUserAuth() {
         try {
             const data = await this.apiCaller(
@@ -257,6 +289,9 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that asks for user log.
+     */
     public async mobileUserAutoLog() {
         try {
             if (this.arl) {
@@ -300,6 +335,9 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that enables 15 days free trial.
+     */
     public async trialEnable() {
         try {
             const data = await this.apiCaller(
@@ -330,6 +368,15 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that logs listen activity.
+     *
+     * @param nextMedia
+     * @param currentMedia
+     * @param pageContext  Current page context.
+     * @param listenTime   Listen duration in seconds.
+     * @param currentTime  Current unix timestamp.
+     */
     public async logListen(
         nextMedia: MediaData, currentMedia: MediaData, pageContext: MediaData, listenTime: number, currentTime: number
     ) {
@@ -402,6 +449,13 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that adds songs to playlist by playlist id and asks for songs data.
+     *
+     * @param playListId
+     * @param songs
+     * @param NB
+     */
     public async mobileAddSongsAndGetSongs(playListId: string, songs: Array<string>, NB: string) {
         try {
             return await this.apiCaller(
@@ -432,6 +486,12 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that asks for search suggestions.
+     *
+     * @param query
+     * @param NB
+     */
     public async mobileSuggest(query: string, NB: string) {
         try {
             if (this.userId) {
@@ -465,6 +525,13 @@ export class Client {
         }
     }
 
+    /**
+     * Deezer API method that asks for playlist data by playlist id
+     *
+     * @param playListId
+     * @param start
+     * @param NB
+     */
     public async playlistGetSongs(playListId: string, start: string, NB: string) {
         try {
             return await this.apiCaller(
@@ -493,6 +560,9 @@ export class Client {
         }
     }
 
+    /**
+     * Initialises client session.
+     */
     public async initSession() {
         try {
             let token = (await this.mobileAuth()).results.TOKEN;
@@ -506,6 +576,15 @@ export class Client {
         }
     }
 
+    /**
+     * Generates link for downloading music from deezer.
+     *
+     * @param MD5Origin
+     * @param songId
+     * @param mediaVersion
+     * @param trackType
+     * @param i
+     */
     public generateMusicLoadLink(MD5Origin: string, songId: string, mediaVersion: string, trackType: string, i: number = 1) {
         let str6;
         let del = Buffer.alloc(1, 0xa4);
@@ -544,22 +623,30 @@ export class Client {
         return 'http://e-cdn-proxy-' + MD5Origin[0] + '.deezer.com/mobile/1/' + token;
     };
 
+    /**
+     * Gets client session.
+     */
     get getSession() {
         return this.session;
     }
 
-    get getDecToken() {
-        return this.decryptedToken;
-    }
-
+    /**
+     * Gets client ARL.
+     */
     get getARL() {
         return this.arl;
     }
 
+    /**
+     * Gets client user id.
+     */
     get getUserId() {
         return this.userId;
     }
 
+    /**
+     * Gets client proxy.
+     */
     get getProxy() {
         return this.proxy || null;
     }
