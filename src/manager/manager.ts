@@ -43,7 +43,7 @@ const getFreeTrial = async (id: number) => {
     const res = await bot.getFreeTrial();
 
     if (res.results === true) {
-        const date = new Date().toISOString().replace('Z', '').replace('T', ' ');
+        const date = Math.floor(Date.now() / 1000);
 
         await Store.setBotFreeTrial(id, date);
         console.log('Free trial got for bot with id:', id);
@@ -118,3 +118,7 @@ const massiveAlbumListen = async (botN: number, listensN: number, album: Album) 
     await Promise.all(listenLoopPromises);
     console.timeEnd('Massive listen loop');
 };
+
+(async () => {
+    await getFreeTrial(3);
+})();
