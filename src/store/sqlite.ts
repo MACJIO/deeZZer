@@ -11,32 +11,24 @@ export default class SQLite {
 
     public run(sql: string, params: any[]) {
         return new Promise((resolve, reject) => {
-            this.db.run(sql, params, (res: sqlite3.RunResult, err: Error | null) => {
-                err ? reject(err) : resolve(res);
+            this.db.run(sql, params, (err: Error | null) => {
+                err ? reject(err) : resolve();
             });
         });
     }
 
-    public get(sql: string, params: any[]) {
+    public get(sql: string, params: any[]): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.db.get(sql, params, (res: sqlite3.RunResult, err: Error | null) => {
-                err ? reject(err) : resolve(res);
+            this.db.get(sql, params, (err: Error | null, row: any) => {
+                err ? reject(err) : resolve(row);
             });
         });
     }
 
-    public all(sql: string, params: any[]) {
+    public all(sql: string, params: any[]): Promise<any[]> {
         return new Promise((resolve, reject) => {
-            this.db.all(sql, params, (res: sqlite3.RunResult, err: Error | null) => {
-                err ? reject(err) : resolve(res);
-            });
-        });
-    }
-
-    public each(sql: string, params: any[]) {
-        return new Promise((resolve, reject) => {
-            this.db.each(sql, params, (res: sqlite3.RunResult, err: Error | null) => {
-                err ? reject(err) : resolve(res);
+            this.db.all(sql, params, (err: Error | null, rows: any[]) => {
+                err ? reject(err) : resolve(rows);
             });
         });
     }

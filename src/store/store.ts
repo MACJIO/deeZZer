@@ -1,12 +1,16 @@
-import pool from './connect';
 import { AccountData } from '../interfaces';
+import SQLite from './sqlite';
+import {randVal} from "../utils";
+import {log} from "util";
+
+const db = new SQLite('deezer.db');
+
 
 const getRandomDevice = async () => {
     try {
-        const res = await pool.query(
-            'select * from devices offset floor(random() * (select count(*) from devices)) limit 1'
-        );
-        return res.rows[0];
+        const devices = await db.all('select * from devices', []);
+
+        return devices[randVal(devices.length)];
     } catch (err) {
         console.log(err);
     }
@@ -14,8 +18,8 @@ const getRandomDevice = async () => {
 
 const insertAccount = async (account: AccountData) => {
     try {
-        const res = await pool.query(
-            'insert into accounts(blog_name, birthday, email, password, lang, sex) values($1, $2, $3, $4, $5, $6) returning id',
+        await db.run(
+            'insert into accounts(blog_name, birthday, email, password, lang, sex) values(?, ?, ?, ?, ?, ?)',
             [
                 account.blogName,
                 account.birthday,
@@ -26,7 +30,7 @@ const insertAccount = async (account: AccountData) => {
             ]
         );
 
-        return res.rows[0].id;
+        return (await db.get('select id from accounts where email=?', [ account.email ])).id;
     } catch (err) {
         console.log(err);
     }
@@ -34,8 +38,8 @@ const insertAccount = async (account: AccountData) => {
 
 const insertBot = async (deviceId: number, accountId: number) => {
     try {
-        return await pool.query(
-            'insert into bots(account, device, state) values($1, $2, $3)',
+        await db.run(
+            'insert into bots(account, device, state) values(?, ?, ?)',
             [
                 accountId,
                 deviceId,
@@ -49,8 +53,8 @@ const insertBot = async (deviceId: number, accountId: number) => {
 
 const setUserId = async (email: string, userId: string | undefined) => {
     try {
-        return await pool.query(
-            'update accounts set deezer_user_id=$1 where email=$2',
+        await db.run(
+            'update accounts set deezer_user_id=? where email=?',
             [
                 userId,
                 email
@@ -63,12 +67,10 @@ const setUserId = async (email: string, userId: string | undefined) => {
 
 const getBotsPool = async (n: number) => {
     try {
-        const res = await pool.query(
-            'select id from bots where (free_trial_start is not null) and state = \'offline\' limit $1',
+        return await db.all(
+            'select id from bots where (free_trial_start is not null) and state = \'offline\' limit ?',
             [ n ]
         );
-
-        return res.rows;
     } catch (err) {
         console.log(err);
     }
@@ -76,31 +78,29 @@ const getBotsPool = async (n: number) => {
 
 const getBotDataById = async (id: number) => {
     try {
-        const res = await pool.query(
+        return await db.get(
             'select * ' +
             'from bots ' +
             'join accounts on bots.account = accounts.id ' +
             'join devices on bots.device = devices.id ' +
-            'where bots.id = $1',
+            'where bots.id = ?',
             [ id ]
         );
-
-        return res.rowCount === 0 ? null : res.rows[0];
     } catch (err) {
         console.log(err);
     }
 };
 
-const setBotFreeTrial = async (id: number, date: string) => {
+const setBotFreeTrial = async (id: number, date: number) => {
     try {
-        await pool.query(
-            'update bots set free_trial_start=$1 where id=$2',
+        await db.run(
+            'update bots set free_trial_start=? where id=?',
             [ date, id ]
         );
     } catch (err) {
         console.log(err);
     }
-}
+};
 
 export const Store = {
     getRandomDevice,

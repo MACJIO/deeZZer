@@ -48,5 +48,5 @@ export class Registrator {
 
 ;(async () => {
     const reg = new Registrator();
-    await reg.bulkRegistration(1);
+    await reg.bulkRegistration(3);
 })();
