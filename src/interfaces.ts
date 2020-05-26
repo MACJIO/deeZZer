@@ -40,7 +40,7 @@ export interface Song {
     duration: number;
 }
 
-export interface Album {
+export interface Playlist {
     songs: Song[];
     context: MediaData;
 }
