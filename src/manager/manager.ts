@@ -1,6 +1,6 @@
 import { Store } from '../store/store';
 import { Bot } from '../bot/bot';
-import { AccountData, Album, DeviceData } from '../interfaces';
+import { AccountData, Playlist, DeviceData } from '../interfaces';
 import ProxyLists, { Proxy, Options } from 'proxy-lists';
 
 
@@ -54,15 +54,15 @@ const getFreeTrial = async (id: number) => {
     }
 }
 
-const album: Album = {
+const album: Playlist = {
     songs: [
         {
             id: "750769012",
-            duration: 1 //70
+            duration: 70 //70
         },
         {
             id: "750769002",
-            duration: 2 //72
+            duration: 72 //72
         }
     ],
     context: {
@@ -91,7 +91,7 @@ const getProxy = (options: Partial<Options>): Promise<Proxy[]> => {
  * @param listensN Number of listens per album
  * @param album
  */
-const massiveAlbumListen = async (botN: number, listensN: number, album: Album) => {
+const massiveAlbumListen = async (botN: number, listensN: number, album: Playlist) => {
     console.time('Get unused bot ids');
     const ids = await Store.getBotsPool(botN) || [];
     console.log("Used bots", ids);
@@ -118,7 +118,3 @@ const massiveAlbumListen = async (botN: number, listensN: number, album: Album) 
     await Promise.all(listenLoopPromises);
     console.timeEnd('Massive listen loop');
 };
-
-(async () => {
-    await getFreeTrial(3);
-})();

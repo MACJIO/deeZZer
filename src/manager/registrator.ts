@@ -7,7 +7,7 @@ import { DeviceData } from '../interfaces';
 export class Registrator {
     public async bulkRegistration(n: number) {
         console.time('bulkreg');
-        if (n <= 100) {
+        if (n <= 1000) {
             let regAccountsCnt = 0;
             for (let i = 0; i < n; i++) {
                 const [deviceId, device] = await this.generateDevice();
@@ -46,7 +46,3 @@ export class Registrator {
     }
 }
 
-;(async () => {
-    const reg = new Registrator();
-    await reg.bulkRegistration(3);
-})();

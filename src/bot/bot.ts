@@ -1,6 +1,6 @@
 import { Client } from '../client/client';
 import {
-    AccountData, Album, DeviceData, MediaData, Proxy
+    AccountData, Playlist, DeviceData, MediaData, Proxy
 } from '../interfaces';
 import { delay, randHex } from '../utils';
 
@@ -91,7 +91,7 @@ export class Bot {
      *
      * @param album
      */
-    public async listenAlbum(album: Album) {
+    public async listenAlbum(album: Playlist) {
         for (let i = 0; i < album.songs.length; i++) {
             let rand = randHex(5);
             let song = album.songs[i];
@@ -127,7 +127,7 @@ export class Bot {
      * @param album
      * @param n
      */
-    public async listenLoopAlbum(album: Album, n: number) {
+    public async listenLoopAlbum(album: Playlist, n: number) {
         for (let i = 0; i < n; i++)
             await this.listenAlbum(album);
     }

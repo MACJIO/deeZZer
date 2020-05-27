@@ -1,19 +1,42 @@
 import { AccountData } from '../interfaces';
 import SQLite from './sqlite';
-import {randVal} from "../utils";
-import {log} from "util";
+import { randVal } from '../utils';
+import devices from '../../devices.json';
 
 const db = new SQLite('deezer.db');
 
-
-const getRandomDevice = async () => {
+const initStore = async () => {
     try {
-        const devices = await db.all('select * from devices', []);
+        await db.run(
+            'CREATE TABLE accounts(' +
+            'id integer PRIMARY KEY AUTOINCREMENT, ' +
+            'deezer_user_id integer, ' +
+            'blog_name text, ' +
+            'birthday text, ' +
+            'email text UNIQUE, ' +
+            'password text, ' +
+            'lang text, ' +
+            'sex integer)',
+            []
+        );
 
-        return devices[randVal(devices.length)];
+        await db.run(
+            'CREATE TABLE bots(' +
+            'id integer PRIMARY KEY AUTOINCREMENT, ' +
+            'account INTEGER, ' +
+            'device INTEGER, ' +
+            'state TEXT, ' +
+            'free_trial_start INTEGER, ' +
+            'FOREIGN KEY(account) REFERENCES accounts(id))',
+            []
+        );
     } catch (err) {
         console.log(err);
     }
+}
+
+const getRandomDevice = async () => {
+    return devices[randVal(devices.length)];
 };
 
 const insertAccount = async (account: AccountData) => {
@@ -78,14 +101,18 @@ const getBotsPool = async (n: number) => {
 
 const getBotDataById = async (id: number) => {
     try {
-        return await db.get(
+        const data = await db.get(
             'select * ' +
             'from bots ' +
             'join accounts on bots.account = accounts.id ' +
-            'join devices on bots.device = devices.id ' +
             'where bots.id = ?',
             [ id ]
         );
+
+        return {
+            ...data,
+            ...devices[data.device - 1]
+        };
     } catch (err) {
         console.log(err);
     }
