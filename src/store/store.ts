@@ -27,6 +27,8 @@ const initStore = async () => {
             'device INTEGER, ' +
             'state TEXT, ' +
             'free_trial_start INTEGER, ' +
+            'device_serial TEXT, ' +
+            'uniq_id TEXT, ' +
             'FOREIGN KEY(account) REFERENCES accounts(id))',
             []
         );
