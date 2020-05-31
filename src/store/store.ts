@@ -9,6 +9,9 @@ export class Store extends SQLite {
         this.initScheme();
     }
 
+    /**
+     * Initializes store scheme.
+     */
     private async initScheme() {
         try {
             await this.run(
@@ -41,10 +44,18 @@ export class Store extends SQLite {
         }
     }
 
+    /**
+     * Gets random device from devices.json.
+     */
     public async getRandomDevice() {
         return devices[randVal(devices.length)];
     }
 
+    /**
+     * Adds account to store.
+     *
+     * @param {AccountData} account
+     */
     public async insertAccount(account: AccountData) {
         try {
             await this.run(
@@ -65,6 +76,14 @@ export class Store extends SQLite {
         }
     };
 
+    /**
+     * Adds bot to store.
+     *
+     * @param {number} deviceId     Device id from devices.json.
+     * @param {number} accountId    Account id from accounts table.
+     * @param {string} deviceSerial Hex string with length 64.
+     * @param {string} uniqID       Hex string with length 32.
+     */
     public async insertBot(deviceId: number, accountId: number, deviceSerial: string, uniqID: string) {
         try {
             await this.run(
@@ -82,7 +101,13 @@ export class Store extends SQLite {
         }
     };
 
-    public async setUserId(email: string, userId: string | undefined) {
+    /**
+     * Sets deezer user id to existing account by email.
+     *
+     * @param {string} email
+     * @param {string} userId Deezer user id.
+     */
+    public async setUserId(email: string, userId: string) {
         try {
             await this.run(
                 'update accounts set deezer_user_id=? where email=?',
@@ -96,6 +121,11 @@ export class Store extends SQLite {
         }
     }
 
+    /**
+     * Gets n bots from bots store.
+     *
+     * @param {number} n Number of bots to get.
+     */
     public async getBotsPool(n: number) {
         try {
             return await this.all(
@@ -107,6 +137,11 @@ export class Store extends SQLite {
         }
     };
 
+    /**
+     * Gets all bot data from store including device and account.
+     *
+     * @param {number} id Id in bots table.
+     */
     public async getBotDataById(id: number) {
         try {
             const data = await this.get(
@@ -126,6 +161,12 @@ export class Store extends SQLite {
         }
     };
 
+    /**
+     * Updates bot free trial by id.
+     *
+     * @param {number} id   Id in bots table.
+     * @param {number} date UNIX timestamp in milliseconds&
+     */
     public async setBotFreeTrial(id: number, date: number) {
         try {
             await this.run(
