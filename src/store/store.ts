@@ -74,7 +74,7 @@ export class Store extends SQLite {
         } catch (err) {
             console.log(err);
         }
-    };
+    }
 
     /**
      * Adds bot to store.
@@ -99,7 +99,7 @@ export class Store extends SQLite {
         } catch (err) {
             console.log(err);
         }
-    };
+    }
 
     /**
      * Sets deezer user id to existing account by email.
@@ -135,7 +135,7 @@ export class Store extends SQLite {
         } catch (err) {
             console.log(err);
         }
-    };
+    }
 
     /**
      * Gets all bot data from store including device and account.
@@ -159,7 +159,7 @@ export class Store extends SQLite {
         } catch (err) {
             console.log(err);
         }
-    };
+    }
 
     /**
      * Updates bot free trial by id.
@@ -176,5 +176,5 @@ export class Store extends SQLite {
         } catch (err) {
             console.log(err);
         }
-    };
+    }
 }
