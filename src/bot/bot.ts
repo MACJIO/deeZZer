@@ -78,10 +78,22 @@ export class Bot {
         }
     }
 
+    /**
+     * Adds song to playlist.
+     *
+     * @param {string} playlistId Deezer playlist id.
+     * @param {string} songId     Deezer song id.
+     */
     public async addSongToPlaylist(playlistId: string, songId: string) {
         await this.client.mobileAddSongsAndGetSongs(playlistId, [ songId ], "2000");
     }
 
+    /**
+     * Adds array of songs to playlist.
+     *
+     * @param {string}        playlistId Deezer playlist id.
+     * @param {Array<string>} songIds    Deezer song ids.
+     */
     public async addSongsToPlaylist(playlistId: string, songIds: Array<string>) {
         await this.client.mobileAddSongsAndGetSongs(playlistId, songIds, "2000");
     }
