@@ -1,4 +1,4 @@
-import { AccountData } from '../interfaces';
+import { AccountData, Song } from '../interfaces';
 import SQLite from './sqlite';
 import { randVal } from '../utils';
 import devices from '../../devices.json';
@@ -30,13 +30,22 @@ export class Store extends SQLite {
             await this.run(
                 'CREATE TABLE IF NOT EXISTS bots(' +
                 'id integer PRIMARY KEY AUTOINCREMENT, ' +
-                'account INTEGER, ' +
-                'device INTEGER, ' +
-                'state TEXT, ' +
-                'free_trial_start INTEGER, ' +
-                'device_serial TEXT, ' +
-                'uniq_id TEXT, ' +
+                'account integer, ' +
+                'device integer, ' +
+                'state text, ' +
+                'free_trial_start integer, ' +
+                'device_serial text, ' +
+                'uniq_id text, ' +
                 'FOREIGN KEY(account) REFERENCES accounts(id))',
+                []
+            );
+
+            await this.run(
+                'CREATE TABLE IF NOT EXISTS songs(' +
+                'id integer, ' +
+                'duration integer, ' +
+                'format text, ' +
+                'name text)',
                 []
             );
         } catch (err) {
@@ -49,6 +58,40 @@ export class Store extends SQLite {
      */
     public async getRandomDevice() {
         return devices[randVal(devices.length)];
+    }
+
+    /**
+     * Adds song to store.
+     *
+     * @param {Song} song
+     */
+    public async insertSong(song: Song) {
+        try {
+            await this.run(
+                'insert into songs(id, format, duration, name) values(?, ?, ?, ?)',
+                [
+                    song.id,
+                    song.format,
+                    song.duration || null,
+                    song.name || null,
+                ]
+            );
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    /**
+     * Gets song from songs table by id.
+     *
+     * @param {number} id Deezer song id.
+     */
+    public async getSongById(id: number) {
+        try {
+            return await this.get('select * from songs where id = ?', [ id ]);
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     /**

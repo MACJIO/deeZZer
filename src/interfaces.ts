@@ -38,6 +38,8 @@ export interface MediaData {
 export interface Song {
     id: string;
     duration: number;
+    format?: string;
+    name?: string;
 }
 
 export interface Playlist {
