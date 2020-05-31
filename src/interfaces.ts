@@ -22,11 +22,11 @@ export interface DeviceData {
     lang: string;
     screenWidth?: number;
     screenHeight?: number;
-    uniqID?: string;
+    uniqID: string;
     cpuCount?: number;
     cpuMaxFrequency?: number;
     ram?: number;
-    serial?: string;
+    serial: string;
 }
 
 export interface MediaData {

@@ -1,6 +1,6 @@
 import { Bot } from '../bot/bot';
 import { generateAccount, randHex } from '../utils';
-import { Store } from '../store/store'
+import Store from '../store/index'
 import { DeviceData } from '../interfaces';
 
 
@@ -19,7 +19,7 @@ export class Registrator {
                 if (res.error.length == 0) {
                     const accountId = await Store.insertAccount(account);
                     console.log(accountId);
-                    await Store.insertBot(deviceId, accountId);
+                    await Store.insertBot(deviceId, accountId, device.serial, device.uniqID);
                     regAccountsCnt++;
                 } else {
                     console.log('Error', res.error, 'on', account);
@@ -45,4 +45,3 @@ export class Registrator {
         ];
     }
 }
-

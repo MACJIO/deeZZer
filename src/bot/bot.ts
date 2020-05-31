@@ -95,7 +95,7 @@ export class Bot {
         for (let i = 0; i < album.songs.length; i++) {
             let rand = randHex(5);
             let song = album.songs[i];
-            console.time('Listen' + rand + ' track ' + song.id);
+            console.time('Listen[' + rand + '] track ' + song.id);
             let next =
                 i + 1 == album.songs.length ?
                     { id: album.songs[0].id, type: 'song' } :

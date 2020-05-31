@@ -36,10 +36,6 @@ export class Client {
         }
         if (!device.appVersion)
             this.device.appVersion = '6.1.18.94';
-        if (!device.uniqID)
-            this.device.uniqID = randHex(32);
-        if (!device.serial)
-            this.device.serial = randHex(64);
         this.userAgent = generateUserAgent(this.device);
         this.mobileTracking = generateMobileTracking(this.device);
         this.apiKey = config.APP.ANDROID_API_KEY;

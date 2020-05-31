@@ -1,4 +1,4 @@
-import { Store } from '../store/store';
+import Store from '../store/index';
 import { Bot } from '../bot/bot';
 import { AccountData, Playlist, DeviceData } from '../interfaces';
 import ProxyLists, { Proxy, Options } from 'proxy-lists';
@@ -26,6 +26,8 @@ const initBotById = async (id: number): Promise<Bot> => {
         model: data.model,
         name: data.name,
         lang: data.lang,
+        serial: data.device_serial,
+        uniqID: data.uniq_id
     }
 
     return new Bot(account, device);
@@ -118,3 +120,7 @@ const massiveAlbumListen = async (botN: number, listensN: number, album: Playlis
     await Promise.all(listenLoopPromises);
     console.timeEnd('Massive listen loop');
 };
+
+(async () => {
+    await massiveAlbumListen(1, 1, album);
+})();
