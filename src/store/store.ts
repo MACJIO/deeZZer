@@ -45,7 +45,8 @@ export class Store extends SQLite {
                 'id integer, ' +
                 'duration integer, ' +
                 'format text, ' +
-                'name text)',
+                'name text, ' +
+                'listen_count integer default 0)',
                 []
             );
         } catch (err) {
@@ -88,7 +89,24 @@ export class Store extends SQLite {
      */
     public async getSongById(id: number) {
         try {
-            return await this.get('select * from songs where id = ?', [ id ]);
+            return await this.get('select * from songs where id=?', [ id ]);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    /**
+     * Sets song listen count by deezer song id.
+     *
+     * @param {number} id Deezer song id.
+     * @param {number} n  Listen count.
+     */
+    public async setSongListenCount(id: number, n: number) {
+        try {
+            await this.run(
+                'update songs set listen_count=listen_count+? where id=?',
+                [ n, id ]
+            );
         } catch (err) {
             console.log(err);
         }
