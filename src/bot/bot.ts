@@ -99,37 +99,41 @@ export class Bot {
     }
 
     /**
-     * Emulates full album listening.
+     * Emulates full playlist listening.
      *
-     * @param album
+     * @param playlist
      */
-    public async listenAlbum(album: Playlist) {
-        for (let i = 0; i < album.songs.length; i++) {
-            let rand = randHex(5);
-            let song = album.songs[i];
-            console.time('Listen[' + rand + '] track ' + song.id);
-            let next =
-                i + 1 == album.songs.length ?
-                    { id: album.songs[0].id, type: 'song' } :
-                    { id: album.songs[i+1].id, type: 'song' };
+    public async listenPlaylist(playlist: Playlist) {
+        try {
+            for (let i = 0; i < playlist.songs.length; i++) {
+                let rand = randHex(5);
+                let song = playlist.songs[i];
+                console.time('Listen[' + rand + '] track ' + song.id);
+                let next =
+                    i + 1 == playlist.songs.length ?
+                        { id: playlist.songs[0].id, type: 'song' } :
+                        { id: playlist.songs[i+1].id, type: 'song' };
 
-            await delay(song.duration);
+                await delay(song.duration);
 
-            await this.listen(
-                next,
-                {
-                    id: song.id,
-                    type: 'song',
-                    format: 'MP3_128'
-                },
-                {
-                    id: album.context.id,
-                    type: album.context.type
-                },
-                song.duration,
-                Math.floor(Date.now() / 1000)
-            );
-            console.timeEnd('Listen' + rand + ' track ' + song.id);
+                await this.listen(
+                    next,
+                    {
+                        id: song.id,
+                        type: 'song',
+                        format: 'MP3_128'
+                    },
+                    {
+                        id: playlist.context.id,
+                        type: playlist.context.type
+                    },
+                    song.duration,
+                    Math.floor(Date.now() / 1000)
+                );
+                console.timeEnd('Listen' + rand + ' track ' + song.id);
+            }
+        } catch (err) {
+            console.log(err);
         }
     }
 
@@ -139,9 +143,9 @@ export class Bot {
      * @param album
      * @param n
      */
-    public async listenLoopAlbum(album: Playlist, n: number) {
+    public async listenLoopPlaylist(album: Playlist, n: number) {
         for (let i = 0; i < n; i++)
-            await this.listenAlbum(album);
+            await this.listenPlaylist(album);
     }
 
     /**
