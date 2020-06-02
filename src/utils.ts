@@ -194,18 +194,41 @@ const getRandomDevice = () => {
     return devices[randVal(devices.length)];
 }
 
+/**
+ * Generates random device.
+ */
+const generateDevice = (): [number, DeviceData] => {
+    const device = getRandomDevice();
+    return [
+        device.id,
+        {
+            type: device.type,
+            model: device.model,
+            name: device.name,
+            screenWidth: device.screen_width || undefined,
+            screenHeight: device.screen_height || undefined,
+            cpuCount: device.cpu_count || undefined,
+            cpuMaxFrequency: device.cpu_max_frequency || undefined,
+            ram: device.ram || undefined,
+            lang: 'us',
+            uniqID: randHex(32),
+            serial: randHex(64)
+        }
+    ];
+}
+
 export {
     decryptToken,
     generateAuthToken,
     generateUserAgent,
     generateMobileTracking,
-    getRandomDevice,
     randHex,
     encryptPassword,
     decryptPassword,
     padding,
     generateNetwork,
     generateAccount,
+    generateDevice,
     randVal,
     delay
 }
