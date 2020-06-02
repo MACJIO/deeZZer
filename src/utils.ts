@@ -5,6 +5,7 @@ import { AccountData, DeviceData } from './interfaces';
 import randomLorem from 'random-lorem';
 
 import config from '../config.json';
+import devices from '../devices.json';
 
 const padding = (data: Buffer): Buffer => {
     const res = Buffer.alloc((data.length + 15) & ~0xF, 0);
@@ -186,11 +187,19 @@ const delay = async (seconds: number) => {
     return await new Promise(resolve => setTimeout(resolve, seconds * 1000));
 }
 
+/**
+ * Gets random device from devices.json.
+ */
+const getRandomDevice = () => {
+    return devices[randVal(devices.length)];
+}
+
 export {
     decryptToken,
     generateAuthToken,
     generateUserAgent,
     generateMobileTracking,
+    getRandomDevice,
     randHex,
     encryptPassword,
     decryptPassword,
