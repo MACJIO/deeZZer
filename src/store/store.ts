@@ -1,6 +1,5 @@
 import { AccountData, Song } from '../interfaces';
 import SQLite from './sqlite';
-import { randVal } from '../utils';
 import devices from '../../devices.json';
 
 export class Store extends SQLite {
@@ -52,13 +51,6 @@ export class Store extends SQLite {
         } catch (err) {
             console.log(err);
         }
-    }
-
-    /**
-     * Gets random device from devices.json.
-     */
-    public async getRandomDevice() {
-        return devices[randVal(devices.length)];
     }
 
     /**
