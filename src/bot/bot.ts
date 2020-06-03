@@ -130,7 +130,7 @@ export class Bot {
                     song.duration,
                     Math.floor(Date.now() / 1000)
                 );
-                console.timeEnd('Listen' + rand + ' track ' + song.id);
+                console.timeEnd('Listen[' + rand + '] track ' + song.id);
             }
         } catch (err) {
             console.log(err);
