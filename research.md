@@ -85,7 +85,11 @@ Algorithm
 TODO
 
 #### uniq_id
-TODO
+Algorithm  
+Build string:  
+1. If can get the android id, build string 'ax' + android_id(64-bit number as hex string)
+2. If can't get the android id, build string 'axdee3e5' + Build.SERIAL
+3. Get md5 hash from string
 
 #### mobile_tracking
 base64 encoded json
