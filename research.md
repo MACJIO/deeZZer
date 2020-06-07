@@ -88,7 +88,16 @@ TODO
 TODO
 
 #### mobile_tracking
-TODO
+base64 encoded json
+```json
+{
+  "oursecret": "deezer011013sc",
+  "androidId": "androidId",
+  "macAddress": "02:00:00:00:00:00",
+  "device_type": "android",
+  "app_id": "deezer.android.app"
+}
+```
 
 ### Static values
 #### API Key
