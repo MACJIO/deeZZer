@@ -1,8 +1,8 @@
 # Deezer research
 App version 6.2.2.80 (Android)
 
-### API methods
-#### mobile_auth GET HTTP
+## API methods
+### mobile_auth GET HTTP
 BASE_URL
 api.deezer.com/1.0/gateway.php
 
@@ -20,7 +20,7 @@ Query params
 
 Description: returns TOKEN needed for auth_token generation
 
-#### log.listen POST HTTPS
+### log.listen POST HTTPS
 BASE_URL
 api.deezer.com/1.0/gateway.php
 
@@ -74,24 +74,24 @@ Data(JSON)
 * stream_id - `java.util.UUID.getRandom().toString()`
 
 
-### Generated values
-#### network
+## Generated values
+### network
 Algorithm
 1. Build string ```mcc + '+++' + mnc + '+++' + timestamp_ms```
 2. Encrypt with aec-128-ecb, key `a8u5.26iHgcv,OIu`
 3. Encode to hex
 
-#### sid
+### sid
 TODO
 
-#### uniq_id
+### uniq_id
 Algorithm  
 Build string:  
 1. If can get the android id, build string 'ax' + android_id(64-bit number as hex string)
 2. If can't get the android id, build string 'axdee3e5' + Build.SERIAL
 3. Get md5 hash from string
 
-#### mobile_tracking
+### mobile_tracking
 base64 encoded json
 ```json
 {
@@ -103,12 +103,18 @@ base64 encoded json
 }
 ```
 
-### Static values
-#### API Key
+### auth_token
+Algorithm
+1. Get TOKEN from mobile_auth method response
+2. Encrypt with aes-128-ecb TOKEN.substr(0, 64), key TOKEN.substr(64, 80)
+3. Encode to hex 
+
+## Static values
+### API Key
 Android: `4VCYIJUCDLOUELGD1V8WBVYBNVDYOXEWSLLZDONGBBDFVXTZJRXPR29JRLQFO6ZE`  
 IOS: `ZAIVAHCEISOHWAICUQUEXAEPICENGUAFAEZAIPHAELEEVAHPHUCUFONGUAPASUAY`
 
-#### media_format
+### media_format
 0 'MP3_MISC'  
 1 'MP3_128'  
 3 'MP3_320'  
