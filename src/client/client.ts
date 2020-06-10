@@ -1,5 +1,5 @@
-import {DeviceData, AccountData, MediaData, Proxy} from '../interfaces';
-import axios, { Method, AxiosRequestConfig } from 'axios';
+import {AccountData, DeviceData, MediaData, Proxy} from '../interfaces';
+import axios, {AxiosRequestConfig, Method} from 'axios';
 import * as tunnel from 'tunnel';
 import {
     decryptToken,
@@ -7,7 +7,8 @@ import {
     generateAuthToken,
     generateMobileTracking,
     generateNetwork,
-    generateUserAgent, randHex,
+    generateUserAgent,
+    randHex,
 } from '../utils';
 import config from '../../config.json'
 import md5 from 'md5';
@@ -39,6 +40,34 @@ export class Client {
         this.userAgent = generateUserAgent(this.device);
         this.mobileTracking = generateMobileTracking(this.device);
         this.apiKey = config.APP.ANDROID_API_KEY;
+    }
+
+    /**
+     * Gets client session.
+     */
+    get getSession() {
+        return this.session;
+    }
+
+    /**
+     * Gets client ARL.
+     */
+    get getARL() {
+        return this.arl;
+    }
+
+    /**
+     * Gets client user id.
+     */
+    get getUserId() {
+        return this.userId;
+    }
+
+    /**
+     * Gets client proxy.
+     */
+    get getProxy() {
+        return this.proxy || null;
     }
 
     /**
@@ -266,7 +295,7 @@ export class Client {
                     'device_name': this.device.model,
                     'device_os': this.device.OS?.name,
                     'device_serial': this.device.serial,
-                    'device_type': this.device.type,
+                    'device_type': 'phone',
                     'google_play_services_availability': '0',
                     'mail': this.account.email,
                     'model': this.device.model,
@@ -618,32 +647,4 @@ export class Client {
 
         return 'http://e-cdn-proxy-' + MD5Origin[0] + '.deezer.com/mobile/1/' + token;
     };
-
-    /**
-     * Gets client session.
-     */
-    get getSession() {
-        return this.session;
-    }
-
-    /**
-     * Gets client ARL.
-     */
-    get getARL() {
-        return this.arl;
-    }
-
-    /**
-     * Gets client user id.
-     */
-    get getUserId() {
-        return this.userId;
-    }
-
-    /**
-     * Gets client proxy.
-     */
-    get getProxy() {
-        return this.proxy || null;
-    }
 }
