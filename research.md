@@ -32,6 +32,28 @@ Query params
 
 Description: initializes the session and returns session id.
 
+### trial_enable POST HTTPS
+BASE_URL
+api.deezer.com/1.0/gateway.php
+
+Query params
+* [api_key](#API-key)
+* [auth_token](#auth_token)
+* method - 'trial_enable'
+* output - 3 always
+* input - 3 always
+* [network](#network)
+* [mobile_tracking](#mobile_tracking)
+
+Data(JSON)
+```(json)
+{
+    "ORIGIN": ""
+}
+```
+
+Description: enables 15 days free trial.
+
 ### log.listen POST HTTPS
 BASE_URL
 api.deezer.com/1.0/gateway.php
