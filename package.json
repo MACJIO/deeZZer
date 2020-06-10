@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build:live",
     "build": "tsc -p .",
     "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "test": "ts-node src/test.ts"
@@ -23,7 +22,6 @@
     "@types/sqlite3": "^3.1.6",
     "@types/tunnel": "0.0.1",
     "axios": "^0.19.2",
-    "md5": "^2.2.1",
     "proxy-lists": "^1.23.0",
     "random-lorem": "^1.0.4",
     "sqlite3": "^4.2.0",

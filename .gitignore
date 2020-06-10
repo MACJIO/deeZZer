@@ -5,3 +5,4 @@
 src/test.ts
 package-lock.json
 deezer.db
+yarn.lock
