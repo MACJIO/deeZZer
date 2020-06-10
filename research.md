@@ -20,6 +20,18 @@ Query params
 
 Description: returns TOKEN needed for auth_token generation
 
+### api_checkToken GET HTTP
+BASE_URL
+api.deezer.com/1.0/gateway.php
+
+Query params
+* [api_key](#API-key)
+* [auth_token](#auth_token)
+* output - 3 always
+* method - 'api_checkToken'
+
+Description: initializes the session and returns session id.
+
 ### log.listen POST HTTPS
 BASE_URL
 api.deezer.com/1.0/gateway.php
@@ -82,7 +94,7 @@ Algorithm
 3. Encode to hex
 
 ### sid
-TODO
+Returns from [api_checkToken]() method.
 
 ### uniq_id
 Algorithm  
