@@ -185,14 +185,14 @@ const generateAccount = (country?: string): AccountData => {
 
 const delay = async (seconds: number) => {
     return await new Promise(resolve => setTimeout(resolve, seconds * 1000));
-}
+};
 
 /**
  * Gets random device from devices.json.
  */
 const getRandomDevice = () => {
     return devices[randVal(devices.length)];
-}
+};
 
 /**
  * Generates random device.
@@ -211,11 +211,56 @@ const generateDevice = (): [number, DeviceData] => {
             cpuMaxFrequency: device.cpu_max_frequency || undefined,
             ram: device.ram || undefined,
             lang: 'us',
-            uniqID: randHex(32),
+            uniqID: crypto.createHash("md5").update("as" + randHex(16)).digest("hex"),
             serial: randHex(64)
         }
     ];
 }
+
+const bytesToUuid = (buf: Uint8Array) => {
+    const byteToHex = [];
+
+    for (let i = 0; i < 256; ++i) {
+        byteToHex.push((i + 0x100).toString(16).substr(1));
+    }
+
+    const offset = 0;
+
+    return (
+        byteToHex[buf[offset]] +
+        byteToHex[buf[offset + 1]] +
+        byteToHex[buf[offset + 2]] +
+        byteToHex[buf[offset + 3]] +
+        '-' +
+        byteToHex[buf[offset + 4]] +
+        byteToHex[buf[offset + 5]] +
+        '-' +
+        byteToHex[buf[offset + 6]] +
+        byteToHex[buf[offset + 7]] +
+        '-' +
+        byteToHex[buf[offset + 8]] +
+        byteToHex[buf[offset + 9]] +
+        '-' +
+        byteToHex[buf[offset + 10]] +
+        byteToHex[buf[offset + 11]] +
+        byteToHex[buf[offset + 12]] +
+        byteToHex[buf[offset + 13]] +
+        byteToHex[buf[offset + 14]] +
+        byteToHex[buf[offset + 15]]
+    ).toLowerCase();
+};
+
+const randomUUID = () => {
+    const rands = new Uint8Array(16);
+
+    crypto.randomFillSync(rands);
+
+    // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+    rands[6] = (rands[6] & 0x0f) | 0x40;
+    rands[8] = (rands[8] & 0x3f) | 0x80;
+
+    return bytesToUuid(rands);
+};
 
 export {
     decryptToken,
@@ -230,5 +275,6 @@ export {
     generateAccount,
     generateDevice,
     randVal,
-    delay
+    delay,
+    randomUUID
 }
