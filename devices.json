@@ -6,9 +6,10 @@
     "screen_width":800,
     "screen_height":1280,
     "cpu_count":4,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy Note 10.1"
+    "cpu_max_frequency":1400000,
+    "ram":2048,
+    "name":"Galaxy Note 10.1 LTE",
+    "manufacturer":"Samsung"
   },
   {
     "id":2,
@@ -17,20 +18,22 @@
     "screen_width":800,
     "screen_height":1280,
     "cpu_count":4,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy Note 10.1"
+    "cpu_max_frequency":1400000,
+    "ram":2048,
+    "name":"Galaxy Note 10.1",
+    "manufacturer":"Samsung"
   },
   {
     "id":3,
     "type":"Mobile",
     "model":"SM-G9500",
-    "screen_width":null,
-    "screen_height":null,
-    "cpu_count":null,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S8"
+    "screen_width":1080,
+    "screen_height":1920,
+    "cpu_count":8,
+    "cpu_max_frequency":1900800,
+    "ram":1024,
+    "name":"Galaxy S8",
+    "manufacturer":"samsung"
   },
   {
     "id":4,
@@ -39,9 +42,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S8"
+    "cpu_max_frequency":3000000,
+    "ram":1024,
+    "name":"Galaxy S8",
+    "manufacturer":"Samsung"
   },
   {
     "id":5,
@@ -50,9 +54,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S8"
+    "cpu_max_frequency":1690000,
+    "ram":1024,
+    "name":"Galaxy S8",
+    "manufacturer":"Samsung"
   },
   {
     "id":6,
@@ -61,9 +66,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S8"
+    "cpu_max_frequency":1690000,
+    "ram":1024,
+    "name":"Galaxy S8",
+    "manufacturer":"Samsung"
   },
   {
     "id":7,
@@ -72,9 +78,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S8"
+    "cpu_max_frequency":1690000,
+    "ram":1024,
+    "name":"Galaxy S8",
+    "manufacturer":"Samsung"
   },
   {
     "id":8,
@@ -83,9 +90,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S8"
+    "cpu_max_frequency":1690000,
+    "ram":1024,
+    "name":"Galaxy S8",
+    "manufacturer":"Samsung"
   },
   {
     "id":9,
@@ -94,9 +102,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S8"
+    "cpu_max_frequency":1690000,
+    "ram":1024,
+    "name":"Galaxy S8",
+    "manufacturer":"Samsung"
   },
   {
     "id":10,
@@ -105,9 +114,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S9"
+    "cpu_max_frequency":1794000,
+    "ram":0,
+    "name":"Galaxy S9",
+    "manufacturer":"Samsung"
   },
   {
     "id":11,
@@ -116,9 +126,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S9"
+    "cpu_max_frequency":1794000,
+    "ram":0,
+    "name":"Galaxy S9",
+    "manufacturer":"Samsung"
   },
   {
     "id":12,
@@ -127,9 +138,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S9"
+    "cpu_max_frequency":1794000,
+    "ram":0,
+    "name":"Galaxy S9",
+    "manufacturer":"Samsung"
   },
   {
     "id":13,
@@ -138,9 +150,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S9"
+    "cpu_max_frequency":1766000,
+    "ram":0,
+    "name":"Galaxy S9",
+    "manufacturer":"Samsung"
   },
   {
     "id":14,
@@ -149,9 +162,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S9"
+    "cpu_max_frequency":1766400,
+    "ram":0,
+    "name":"Galaxy S9",
+    "manufacturer":"Samsung"
   },
   {
     "id":15,
@@ -160,9 +174,10 @@
     "screen_width":1440,
     "screen_height":2960,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Galaxy S9"
+    "cpu_max_frequency":1766400,
+    "ram":0,
+    "name":"Galaxy S9",
+    "manufacturer":"Samsung"
   },
   {
     "id":16,
@@ -171,9 +186,10 @@
     "screen_width":1080,
     "screen_height":1920,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Honor 9"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Honor 9",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":17,
@@ -182,9 +198,10 @@
     "screen_width":1080,
     "screen_height":1920,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Honor 9"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Honor 9",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":18,
@@ -193,9 +210,10 @@
     "screen_width":1080,
     "screen_height":1920,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Honor 9"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Honor 9",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":19,
@@ -204,9 +222,10 @@
     "screen_width":1080,
     "screen_height":1920,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Honor 9"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Honor 9",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":20,
@@ -215,9 +234,10 @@
     "screen_width":1440,
     "screen_height":2560,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Mate 10"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Mate 10",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":21,
@@ -226,9 +246,10 @@
     "screen_width":1440,
     "screen_height":2560,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Mate 10"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Mate 10",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":22,
@@ -237,9 +258,10 @@
     "screen_width":1440,
     "screen_height":2560,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Mate 10"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Mate 10",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":23,
@@ -248,9 +270,10 @@
     "screen_width":1440,
     "screen_height":2560,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Mate 10"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Mate 10",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":24,
@@ -259,9 +282,10 @@
     "screen_width":1080,
     "screen_height":2160,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Mate 10 Pro"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Mate 10 Pro",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":25,
@@ -270,9 +294,10 @@
     "screen_width":1080,
     "screen_height":2160,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Mate 10 Pro"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Mate 10 Pro",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":26,
@@ -281,9 +306,10 @@
     "screen_width":1080,
     "screen_height":2160,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Mate 10 Pro"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Mate 10 Pro",
+    "manufacturer":"HUAWEI"
   },
   {
     "id":27,
@@ -292,8 +318,9 @@
     "screen_width":1080,
     "screen_height":2160,
     "cpu_count":8,
-    "cpu_max_frequency":null,
-    "ram":null,
-    "name":"Mate 10 Pro"
+    "cpu_max_frequency":1844000,
+    "ram":0,
+    "name":"Mate 10 Pro",
+    "manufacturer":"HUAWEI"
   }
 ]
