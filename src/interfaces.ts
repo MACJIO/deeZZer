@@ -20,13 +20,14 @@ export interface DeviceData {
     model: string;
     appVersion?: string;
     lang: string;
-    screenWidth?: number;
-    screenHeight?: number;
+    screenWidth: number;
+    screenHeight: number;
     uniqID: string;
-    cpuCount?: number;
-    cpuMaxFrequency?: number;
-    ram?: number;
+    cpuCount: number;
+    cpuMaxFrequency: number;
+    ram: number;
     serial: string;
+    manufacturer: string;
 }
 
 export interface MediaData {
