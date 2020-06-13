@@ -1,7 +1,8 @@
 import Store from '../store/index';
-import { Bot } from '../bot/bot';
-import { AccountData, Playlist, DeviceData } from '../interfaces';
-import { generateAccount, randHex } from "../utils";
+import {Bot} from '../bot/bot';
+import {AccountData, DeviceData, Playlist} from '../interfaces';
+import {randHex} from '../utils';
+import {Client} from "../client/client";
 
 class BotsPool {
     /**
@@ -16,19 +17,25 @@ class BotsPool {
         const account: AccountData = {
             blogName: data.blog_name,
             birthday: data.birthday,
-            email: data.email,
+            email:    data.email,
             password: data.password,
-            lang: data.label,
-            sex: data.sex ? 'F' : 'M'
+            lang:     data.label,
+            sex:      data.sex ? 'F' : 'M'
         };
 
         const device: DeviceData = {
-            type: data.type,
-            model: data.model,
-            name: data.name,
-            lang: data.lang,
-            serial: data.device_serial,
-            uniqID: data.uniq_id
+            type:            data.type,
+            model:           data.model,
+            name:            data.name,
+            lang:            data.lang,
+            serial:          data.device_serial,
+            uniqID:          data.uniq_id,
+            manufacturer:    data.manufacturer,
+            cpuMaxFrequency: data.cpu_max_frequency,
+            cpuCount:        data.cpu_count,
+            ram:             data.ram,
+            screenHeight:    data.screen_height,
+            screenWidth:     data.screen_width
         }
 
         return new Bot(account, device);
@@ -56,55 +63,6 @@ class BotsPool {
             console.log('Couldn\'t get free trial for bot with id:', id);
         }
     }
-
-    public async bulkRegistration(n: number) {
-        console.time('bulkreg');
-        if (n <= 1000) {
-            let regAccountsCnt = 0;
-            for (let i = 0; i < n; i++) {
-                const [deviceId, device] = await this.generateDevice();
-                const account = generateAccount();
-
-                const bot = new Bot(account, device);
-                const res = await bot.signUp();
-
-                if (res.error.length == 0) {
-                    const accountId = await Store.insertAccount(account);
-                    console.log(accountId);
-                    await Store.insertBot(deviceId, accountId, device.serial, device.uniqID);
-                    regAccountsCnt++;
-                } else {
-                    console.log('Error', res.error, 'on', account);
-                }
-            }
-            console.log('Registered', regAccountsCnt, 'of', n);
-            console.timeEnd('bulkreg');
-        }
-    }
-
-    /**
-     * Generates random device.
-     */
-    public async generateDevice(): Promise<[number, DeviceData]> {
-        const device = await Store.getRandomDevice();
-        return [
-            device.id,
-            {
-                type: device.type,
-                model: device.model,
-                name: device.name,
-                screenWidth: device.screen_width || undefined,
-                screenHeight: device.screen_height || undefined,
-                cpuCount: device.cpu_count || undefined,
-                cpuMaxFrequency: device.cpu_max_frequency || undefined,
-                ram: device.ram || undefined,
-                lang: 'us',
-                uniqID: randHex(32),
-                serial: randHex(64)
-            }
-        ];
-    }
-
 }
 
 class PlaylistListener {
@@ -112,16 +70,20 @@ class PlaylistListener {
     private listenerId: string = randHex(16);
     private botsPool: BotsPool = new BotsPool();
 
-    constructor(private readonly playlist: Playlist) {}
+    constructor(private readonly playlist: Playlist) {
+    }
+
+    get id() {
+        return this.listenerId;
+    }
 
     /**
      * Gets n bots from pool and starts to listen album for m times.
      *
      * @param botN     Number of bots.
      * @param listensN Number of listens per album
-     * @param album
      */
-    public async massiveListen(botN: number, listensN: number, album: Playlist) {
+    public async massiveListen(botN: number, listensN: number) {
         console.time('Get unused bot ids');
         const ids = await Store.getBotsPool(botN) || [];
         console.log("Used bots", ids);
@@ -144,12 +106,67 @@ class PlaylistListener {
         console.time('Massive listen loop');
         let listenLoopPromises = [];
         for (let i = 0; i < pool.length; i++)
-            listenLoopPromises.push(pool[i].listenLoopPlaylist(album, listensN));
+            listenLoopPromises.push(pool[i].listenLoopPlaylist(this.playlist, listensN));
         await Promise.all(listenLoopPromises);
         console.timeEnd('Massive listen loop');
-    };
-
-    get id() {
-        return this.listenerId;
     }
 }
+
+(async () => {
+    const album: Playlist = {
+        songs: [
+            {
+                id: "750769012",
+                duration: 29 //70
+            },
+            {
+                id: "750769002",
+                duration: 1 //72
+            }
+        ],
+        context: {
+            type: "album_page",
+            id: "110518052"
+        }
+    };
+
+    const data = await Store.getBotDataById(2);
+
+    const account: AccountData = {
+        blogName: data.blog_name,
+        birthday: data.birthday,
+        email:    data.email,
+        password: data.password,
+        lang:     data.lang,
+        sex:      data.sex ? 'F' : 'M'
+    };
+
+    const device: DeviceData = {
+        type:            data.type,
+        model:           data.model,
+        name:            data.name,
+        lang:            data.lang,
+        serial:          data.device_serial,
+        uniqID:          data.uniq_id,
+        manufacturer:    data.manufacturer,
+        cpuMaxFrequency: data.cpu_max_frequency,
+        cpuCount:        data.cpu_count,
+        ram:             data.ram,
+        screenHeight:    data.screen_height,
+        screenWidth:     data.screen_width
+    }
+
+    const client = new Client(account, device);
+
+    console.log("Log in");
+    await client.initSession();
+    await client.mobileUserAuth();
+
+    // let session = client.getSession;
+    console.log("Session");
+    await client.initSession();
+    console.log("Log out");
+    await client.mobileUserAuth();
+    console.log("Log in");
+    await client.initSession();
+})();

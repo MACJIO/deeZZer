@@ -1,8 +1,6 @@
-import { Client } from '../client/client';
-import {
-    AccountData, Playlist, DeviceData, MediaData, Proxy
-} from '../interfaces';
-import { delay, randHex } from '../utils';
+import {Client} from '../client/client';
+import {AccountData, DeviceData, MediaData, Playlist, Proxy} from '../interfaces';
+import {delay, randHex} from '../utils';
 
 enum BotState {
     offline,
@@ -16,6 +14,22 @@ export class Bot {
 
     constructor(readonly accountData: AccountData, readonly deviceData: DeviceData) {
         this.client = new Client(accountData, deviceData);
+    }
+
+    /**
+     * Gets bot state.
+     */
+    get getState() {
+        return this.state;
+    }
+
+    /**
+     * Sets bot state
+     *
+     * @param state
+     */
+    set setState(state: BotState) {
+        this.state = state;
     }
 
     /**
@@ -85,7 +99,7 @@ export class Bot {
      * @param {string} songId     Deezer song id.
      */
     public async addSongToPlaylist(playlistId: string, songId: string) {
-        await this.client.mobileAddSongsAndGetSongs(playlistId, [ songId ], "2000");
+        await this.client.mobileAddSongsAndGetSongs(playlistId, [songId], "2000");
     }
 
     /**
@@ -111,8 +125,8 @@ export class Bot {
                 console.time('Listen[' + rand + '] track ' + song.id);
                 let next =
                     i + 1 == playlist.songs.length ?
-                        { id: playlist.songs[0].id, type: 'song' } :
-                        { id: playlist.songs[i+1].id, type: 'song' };
+                        {id: playlist.songs[0].id, type: 'song'} :
+                        {id: playlist.songs[i + 1].id, type: 'song'};
 
                 await delay(song.duration);
 
@@ -146,21 +160,5 @@ export class Bot {
     public async listenLoopPlaylist(album: Playlist, n: number) {
         for (let i = 0; i < n; i++)
             await this.listenPlaylist(album);
-    }
-
-    /**
-     * Gets bot state.
-     */
-    get getState() {
-        return this.state;
-    }
-
-    /**
-     * Sets bot state
-     *
-     * @param state
-     */
-    set setState(state: BotState) {
-        this.state = state;
     }
 }

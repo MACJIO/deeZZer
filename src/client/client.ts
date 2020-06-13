@@ -9,9 +9,9 @@ import {
     generateNetwork,
     generateUserAgent,
     randHex,
+    randomUUID
 } from '../utils';
 import config from '../../config.json'
-import md5 from 'md5';
 import crypto from 'crypto';
 
 export class Client {
@@ -36,7 +36,7 @@ export class Client {
             }
         }
         if (!device.appVersion)
-            this.device.appVersion = '6.1.18.94';
+            this.device.appVersion = '6.2.2.80';
         this.userAgent = generateUserAgent(this.device);
         this.mobileTracking = generateMobileTracking(this.device);
         this.apiKey = config.APP.ANDROID_API_KEY;
@@ -89,6 +89,8 @@ export class Client {
      * @param {Object}           data    Optional. Request payload.
      */
     public async apiCaller(method: Method, type: 'https' | 'http', headers: {}, params: {}, data?: {}) {
+        console.log("User agent: ", this.userAgent);
+        console.log("Session: ", this.session);
         let axiosConfig: AxiosRequestConfig = {
             url: '/gateway.php',
             method,
@@ -436,7 +438,10 @@ export class Client {
                         },
                         'dev': {
                             't': '30',
-                            'v': this.device.model + randHex(3)
+                            'v': this.device.manufacturer + '_' +
+                                 this.device.model + '_' +
+                                 this.device.OS?.version + '_' +
+                                 this.device.appVersion
                         },
                         'device': {
                             'cpu_count': this.device.cpuCount || '',
@@ -451,6 +456,7 @@ export class Client {
                             'id': currentMedia.id,
                             'type': currentMedia.type
                         },
+                        'session_id': randomUUID(),
                         'network': {
                             'subtype': 'wifi',
                             'type': 'LAN'
@@ -631,7 +637,7 @@ export class Client {
         ]);
 
         let str8 = Buffer.concat([
-            Buffer.from(md5(str7)),
+            Buffer.from(crypto.createHash('md5').update(str7).digest('hex')),
             del,
             str7,
             del
