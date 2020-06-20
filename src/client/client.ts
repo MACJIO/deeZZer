@@ -12,7 +12,6 @@ import {
     randomUUID
 } from '../utils';
 import config from '../../config.json'
-import crypto from 'crypto';
 
 export class Client {
     private readonly userAgent: string;
@@ -606,51 +605,4 @@ export class Client {
             console.log(err);
         }
     }
-
-    /**
-     * Generates link for downloading music from deezer.
-     *
-     * @param MD5Origin
-     * @param songId
-     * @param mediaVersion
-     * @param trackType
-     * @param i
-     */
-    public generateMusicLoadLink(MD5Origin: string, songId: string, mediaVersion: string, trackType: string, i: number = 1) {
-        let str6;
-        let del = Buffer.alloc(1, 0xa4);
-        if (trackType !== '3') {
-            str6 = Buffer.alloc(0);
-        } else {
-            str6 = Buffer.concat([del, Buffer.from('1')]);
-        }
-
-        let str7 = Buffer.concat([
-            Buffer.from(MD5Origin),
-            del,
-            Buffer.from(i.toString()),
-            del,
-            Buffer.from(songId),
-            del,
-            Buffer.from(mediaVersion),
-            str6
-        ]);
-
-        let str8 = Buffer.concat([
-            Buffer.from(crypto.createHash('md5').update(str7).digest('hex')),
-            del,
-            str7,
-            del
-        ]);
-
-        // @ts-ignore
-        const cipher = crypto
-            .createCipheriv('aes-128-ecb', config.APP.MUSIC_TOKEN_CIPHER_KEY, null)
-            .setAutoPadding(false);
-
-        let token: string = cipher.update(str8, undefined, 'hex');
-        token += cipher.final('hex');
-
-        return 'http://e-cdn-proxy-' + MD5Origin[0] + '.deezer.com/mobile/1/' + token;
-    };
 }
