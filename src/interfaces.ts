@@ -48,6 +48,13 @@ export interface Playlist {
     context: MediaData;
 }
 
+export interface AuthTokenDecrypted {
+    token: string
+    tokenKey: string,
+    userInfoKey: string,
+    streamKey: string
+}
+
 export type Protocol = 'http' | 'https'
 
 export interface Proxy {
